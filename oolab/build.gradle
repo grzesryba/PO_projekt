@@ -1,0 +1,33 @@
+plugins {
+	id 'application'
+    id 'java'
+}
+
+group = 'org.example'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    implementation fileTree(dir: 'C:\\Users\\Grzesiu\\programowanie\\java\\javafx-sdk-21.0.5\\lib', include: '*.jar')
+}
+
+test {
+    useJUnitPlatform()
+}
+application {
+  getMainClass().set('agh.ics.oop.World')
+    applicationDefaultJvmArgs = [
+            '--module-path', 'C:\\Users\\Grzesiu\\programowanie\\java\\javafx-sdk-21.0.5\\lib',
+            '--add-modules', 'javafx.base, javafx.controls, javafx.fxml, javafx.graphics, javafx.media, javafx.swing, javafx.web'
+    ]
+}
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(21))
+    }
+}
