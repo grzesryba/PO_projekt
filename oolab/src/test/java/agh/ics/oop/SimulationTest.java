@@ -11,7 +11,7 @@ class SimulationTest {
 
     @Test
     void animalMove() {
-        Animal animal = new Animal(new Vector2d(3, 2));
+        Animal animal = new Animal(new Vector2d(3, 2),100);
         WorldMap map = new RectangularMap(5,5);
 
         animal.move(MoveDirection.FORWARD, map);
@@ -33,7 +33,7 @@ class SimulationTest {
 
     @Test
     void animalOutOffBoundaries() {
-        Animal animal = new Animal(new Vector2d(3, 2));
+        Animal animal = new Animal(new Vector2d(3, 2),100);
         WorldMap map = new RectangularMap(5,5);
 
         animal.move(MoveDirection.FORWARD, map);
@@ -45,7 +45,7 @@ class SimulationTest {
         assertEquals(new Vector2d(3, 4), animal.getPosition());
 
 
-        animal = new Animal(new Vector2d(3, 2));
+        animal = new Animal(new Vector2d(3, 2),100);
         map = new RectangularMap(5,5);
 
         animal.move(MoveDirection.RIGHT, map);
@@ -58,7 +58,7 @@ class SimulationTest {
         assertEquals(new Vector2d(4, 2), animal.getPosition());
 
 
-        animal = new Animal(new Vector2d(3, 2));
+        animal = new Animal(new Vector2d(3, 2),100);
         map = new RectangularMap(5,5);
 
         animal.move(MoveDirection.LEFT, map);
@@ -72,7 +72,7 @@ class SimulationTest {
         assertEquals(new Vector2d(0, 2), animal.getPosition());
 
 
-        animal = new Animal(new Vector2d(3, 2));
+        animal = new Animal(new Vector2d(3, 2),100);
         map = new RectangularMap(5,5);
 
         animal.move(MoveDirection.BACKWARD, map);
@@ -109,7 +109,7 @@ class SimulationTest {
                 MoveDirection.FORWARD
         );
         List<Vector2d> positions = List.of(new Vector2d(2, 2), new Vector2d(3, 4));
-        Simulation simulation = new Simulation(positions, directions, map);
+        Simulation simulation = new Simulation(positions, directions, map,100, sexRequiredEnergy, reproduceRequiredEnergy, minMutationNo, maxMutationNo);
         simulation.run();
         List<Animal> animals = simulation.getAnimals();
 
