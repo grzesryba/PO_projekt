@@ -58,7 +58,7 @@ public class GoodHarvestMap extends AbstractWorldMap {
 
     }
 
-    private boolean addBigPlant() {
+    public boolean addBigPlant() {
         List<Vector2d> possibleBottomLeftCorners = new ArrayList<>();
         for (int i = areaMinY; i < areaMaxY; i++) {
             for (int j = areaMinX; j < areaMaxX; j++) {
@@ -182,6 +182,7 @@ public class GoodHarvestMap extends AbstractWorldMap {
                 toRemove.add(grass);
                 cnt += 1;
             }
+
         }
 
         for (BigGrass grass : toRemove) {
@@ -207,5 +208,12 @@ public class GoodHarvestMap extends AbstractWorldMap {
             }
             super.addPlant(1);
         }
+    }
+
+
+    public List<Vector2d> getOccupiedGrassPositions() {
+        List<Vector2d> occupiedPositions = new ArrayList<>(grasses.keySet());
+        occupiedPositions.addAll(occupiedPositionsByBigGrass.keySet());
+        return occupiedPositions;
     }
 }
