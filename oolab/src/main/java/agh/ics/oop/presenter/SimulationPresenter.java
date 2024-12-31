@@ -25,8 +25,8 @@ public class SimulationPresenter implements MapChangeListener {
     public TextField movesArea;
     public Label moveDescription;
     private WorldMap worldMap;
-    private final int mapHeight = 300;
-    private final int mapWidth = 300;
+    private final int mapHeight = 350;
+    private final int mapWidth = 350;
     private int cellWidth;
     private int cellHeight;
 
@@ -50,8 +50,9 @@ public class SimulationPresenter implements MapChangeListener {
         for (int i = minY; i <= maxY; i++) {
             x_idx = 1;
             for (int j = minX; j <= maxX; j++) {
-                if (worldMap.objectAt(new Vector2d(j, i)) != null) {
-                    Text node = new Text(worldMap.objectAt(new Vector2d(j, i)).toString());
+                List<WorldElement> worldElements = worldMap.objectsAt(new Vector2d(j, i));
+                if (worldElements != null) {
+                    Text node = new Text(worldElements.getLast().toString());
                     gridPane.add(node, x_idx, y_idx);
                     GridPane.setHalignment(node, HPos.CENTER);
                     GridPane.setValignment(node, VPos.CENTER);
@@ -115,13 +116,21 @@ public class SimulationPresenter implements MapChangeListener {
     }
 
     public void StartSimulation(ActionEvent actionEvent) {
-        GrassField map = new GrassField(5);
-        List<Vector2d> positions = List.of(new Vector2d(2,2), new Vector2d(3,4));
+        AbstractWorldMap map = new GoodHarvestMap(20,20,79);
         String text = movesArea.getText();
-        List<MoveDirection> moves = OptionParser.parse(text.split(" "));
         map.addListener(this);
         this.setWorldMap(map);
-        Simulation simulation = new Simulation(positions,moves,map);
+        int sexRequiredEnergy = 6;
+        int reproduceRequiredEnergy = 3;
+        int minMutationNo = 0;
+        int maxMutationNo = 7;
+        int startEnergy = 100;
+        int plusGrass = 10;
+        int extraEnergy = 2;
+        int extraEnergyBigGrass = 2;
+        int animalNo = 3;
+        int animalGenLength = 50;
+        Simulation simulation = new Simulation(map, animalGenLength, animalNo, startEnergy, sexRequiredEnergy, reproduceRequiredEnergy, minMutationNo, maxMutationNo, plusGrass, extraEnergy, extraEnergyBigGrass);
         SimulationEngine engine = new SimulationEngine(List.of(simulation));
         new Thread(() -> {
             engine.runSync();
