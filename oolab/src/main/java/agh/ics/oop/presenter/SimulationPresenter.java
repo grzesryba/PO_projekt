@@ -128,9 +128,10 @@ public class SimulationPresenter implements MapChangeListener {
         int plusGrass = 10;
         int extraEnergy = 2;
         int extraEnergyBigGrass = 2;
-        int animalNo = 3;
+        int animalNo = 5;
         int animalGenLength = 50;
-        Simulation simulation = new Simulation(map, animalGenLength, animalNo, startEnergy, sexRequiredEnergy, reproduceRequiredEnergy, minMutationNo, maxMutationNo, plusGrass, extraEnergy, extraEnergyBigGrass);
+        AnimalType type = AnimalType.CRAZY;
+        Simulation simulation = new Simulation(map, animalGenLength, animalNo, startEnergy, sexRequiredEnergy, reproduceRequiredEnergy, minMutationNo, maxMutationNo, plusGrass, extraEnergy, extraEnergyBigGrass,type);
         SimulationEngine engine = new SimulationEngine(List.of(simulation));
         new Thread(() -> {
             engine.runSync();

@@ -17,8 +17,9 @@ public class Simulation implements Runnable {
     private final int plusGrass;
     private final int extraEnergy;
     private final int extraEnergyBigGrass;
+    private final AnimalType animalType;
 
-    public Simulation(WorldMap map, int animalGenLength, int animalNo, int startEnergy, int sexRequiredEnergy, int reproduceRequiredEnergy, int minMutationNo, int maxMutationNo, int plusGrass, int extraEnergy, int extraEnergyBigGrass) {
+    public Simulation(WorldMap map, int animalGenLength, int animalNo, int startEnergy, int sexRequiredEnergy, int reproduceRequiredEnergy, int minMutationNo, int maxMutationNo, int plusGrass, int extraEnergy, int extraEnergyBigGrass, AnimalType animalType) {
         this.animals = new ArrayList<>();
 
         this.sexRequiredEnergy = sexRequiredEnergy;
@@ -29,13 +30,14 @@ public class Simulation implements Runnable {
         this.plusGrass = plusGrass;
         this.extraEnergy = extraEnergy;
         this.extraEnergyBigGrass = extraEnergyBigGrass;
+        this.animalType = animalType;
 
         Random rand = new Random();
         for (int i = 0; i < animalNo; i++) {
             int x = rand.nextInt(map.getWidth());
             int y = rand.nextInt(map.getHeight());
             Vector2d v = new Vector2d(x, y);
-            AbstractAnimal animal = AnimalFactory.createAnimal(AnimalType.CRAZY, v, MapDirection.values()[rand.nextInt(MapDirection.values().length)], animalGenLength, startEnergy);
+            AbstractAnimal animal = AnimalFactory.createAnimal(animalType, v, MapDirection.values()[rand.nextInt(MapDirection.values().length)], animalGenLength, startEnergy);
 
 //            zamknięty cykl - dla normalnego zwierzaka po przejściu tych ruchów powinien być(i jest) znowu w tym samym miejscu
 //                              dla crazy animal kończy za każdym razem w innym
@@ -54,23 +56,30 @@ public class Simulation implements Runnable {
 
     public void run() {
 
+        map.updateStats();
+        System.out.println(map.getStatistics());
+        int lastIdx = 0;
 //        pętla powinna się robić w nieskończoność ale dla testów i obserwacji lepiej ustawić jakąś wartość
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 500; i++) {
+            map.getStatistics().addLine(i);
+            map.deleteDeathAnimals(i);
             map.moveAllAnimals();
             map.plantEating(extraEnergy, extraEnergyBigGrass);
-            map.deleteDeathAnimals();
-            map.addPlant(plusGrass);
             map.reproduce(sexRequiredEnergy, reproduceRequiredEnergy, minMutationNo, maxMutationNo);
-
+            map.addPlant(plusGrass);
             map.alertListeners("Map changed");
-            //            System.out.println(map);
+            map.updateStats();
+            System.out.println(map.getStatistics());
+            lastIdx += 1;
+//            System.out.println(map);
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
                 System.out.println(e.getMessage());
             }
-
         }
+        map.getStatistics().addLine(lastIdx);
+        map.getStatistics().writeToCsv();
     }
 
     public List<AbstractAnimal> getAnimals() {
