@@ -9,6 +9,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -21,10 +22,25 @@ import javafx.scene.text.Text;
 import java.util.List;
 
 public class SimulationPresenter implements MapChangeListener {
+
+    public TextField animalTypeTextField;
+    public TextField grassNumberTextField;
+    public TextField extraEnergyBigGrassField;
+    public TextField extraEnergyField;
+    public TextField plusGrassField;
+    public TextField maxMutationField;
+    public TextField minMutationField;
+    public TextField reproduceRequiredEnergyField;
+    public TextField sexRequiredEnergyField;
+    public TextField startEnergyField;
+    public TextField animalGenLengthField;
+    public TextField heightField;
+    public TextField animalNoTextField;
+    public TextField widthField;
     public TextArea textArea;
     public GridPane gridPane;
-    public TextField movesArea;
-    public Label moveDescription;
+    //public TextField movesArea;
+    //public Label moveDescription;
     private WorldMap worldMap;
     private final int mapHeight = 350;
     private final int mapWidth = 350;
@@ -112,28 +128,40 @@ public class SimulationPresenter implements MapChangeListener {
             gridPane.getChildren().clear();
             gridPane.getColumnConstraints().clear();
             gridPane.getRowConstraints().clear();
-            moveDescription.setText(message);
+            //moveDescription.setText(message);
             drawMap();
         });
     }
 
     public void StartSimulation(ActionEvent actionEvent) {
-        AbstractWorldMap map = new GoodHarvestMap(20,20,79);
-        String text = movesArea.getText();
+        int width = Integer.parseInt(widthField.getText());
+        int height = Integer.parseInt(heightField.getText());
+        int grassNo = Integer.parseInt(grassNumberTextField.getText());
+        AbstractWorldMap map = new GoodHarvestMap(width,height,grassNo);
+        //String text = movesArea.getText();
         map.addListener(this);
         this.setWorldMap(map);
-        int sexRequiredEnergy = 6;
-        int reproduceRequiredEnergy = 3;
-        int minMutationNo = 0;
-        int maxMutationNo = 7;
-        int startEnergy = 100;
-        int plusGrass = 10;
-        int extraEnergy = 2;
-        int extraEnergyBigGrass = 2;
-        int animalNo = 5;
-        int animalGenLength = 50;
-        AnimalType type = AnimalType.CRAZY;
-        Simulation simulation = new Simulation(map, animalGenLength, animalNo, startEnergy, sexRequiredEnergy, reproduceRequiredEnergy, minMutationNo, maxMutationNo, plusGrass, extraEnergy, extraEnergyBigGrass,type);
+        int sexRequiredEnergy = Integer.parseInt(sexRequiredEnergyField.getText());
+        int reproduceRequiredEnergy = Integer.parseInt(reproduceRequiredEnergyField.getText());
+        int minMutationNo = Integer.parseInt(minMutationField.getText());
+        int maxMutationNo = Integer.parseInt(maxMutationField.getText());
+        int startEnergy = Integer.parseInt(startEnergyField.textProperty().getValue());
+        int plusGrass = Integer.parseInt(plusGrassField.getText());
+        int extraEnergy = Integer.parseInt(extraEnergyField.getText());
+        int extraEnergyBigGrass = Integer.parseInt(extraEnergyBigGrassField.getText());
+        int animalNo = Integer.parseInt(animalNoTextField.getText());
+        int animalGenLength = Integer.parseInt(animalGenLengthField.getText());
+
+        String animalTypeInput = animalTypeTextField.getText().trim().toUpperCase();
+        AnimalType animalType;
+        try {
+            animalType = AnimalType.valueOf(animalTypeInput);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Invalid animal type: " + animalTypeInput);
+            return;
+        }
+
+        Simulation simulation = new Simulation(map, animalGenLength, animalNo, startEnergy, sexRequiredEnergy, reproduceRequiredEnergy, minMutationNo, maxMutationNo, plusGrass, extraEnergy, extraEnergyBigGrass,animalType);
         SimulationEngine engine = new SimulationEngine(List.of(simulation));
         this.simulation = simulation;
 
