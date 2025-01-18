@@ -90,33 +90,32 @@
                 <TextField fx:id="animalTypeTextField" promptText="Enter Animal Type (CRAZY, NORMAL)" />
             </HBox>
 
-<!--            <HBox style="-fx-spacing: 10; -fx-alignment: CENTER_LEFT">-->
-<!--                <Label text="Simulation Statistics" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>-->
-<!--                <TextArea fx:id="textArea" prefWidth="300" prefHeight="100" wrapText="true" editable="false" />-->
-<!--            </HBox>-->
-            <HBox style="-fx-spacing: 10; -fx-alignment: CENTER_LEFT; -fx-padding: 0 0 0 20;">
+            <HBox style="-fx-spacing: 320; -fx-alignment: CENTER; -fx-padding: 10;">
+                <!-- Pierwszy blok -->
+                <VBox spacing="5">
+                    <Label text="Simulation Stats:" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+                    <TextArea fx:id="textArea"
+                              promptText="No simulation data yet"
+                              wrapText="true"
+                              editable="false"
+                              prefWidth="200"
+                              prefHeight="250" />
+                </VBox>
 
-                <ScrollPane prefHeight="250" prefWidth="200">
-                    <TextArea fx:id="textArea" wrapText="true" editable="false" />
-                </ScrollPane>
-            </HBox>
-
-            <HBox style="-fx-spacing: 10; -fx-alignment: CENTER_LEFT; -fx-padding: 10;">
-                <VBox>
+                <!-- Drugi blok -->
+                <VBox spacing="5">
                     <Label text="Selected Animal Stats:" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
-                    <TextArea fx:id="animalStatsTextArea"
+                    <TextArea fx:id="animalTextArea"
                               promptText="No animal selected"
                               wrapText="true"
                               editable="false"
-                              prefWidth="300"
-                              prefHeight="150" />
+                              prefWidth="200"
+                              prefHeight="250" />
                 </VBox>
             </HBox>
 
-
         </VBox>
     </top>
-
 
     <center>
         <AnchorPane>

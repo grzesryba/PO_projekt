@@ -13,10 +13,7 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.RowConstraints;
+import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 
 import java.util.List;
@@ -66,41 +63,46 @@ public class SimulationPresenter implements MapChangeListener {
         rows(maxY, minY);
 
         int yIdx = maxY - minY + 1;
-        int xIdx = 1;
+        int xIdx;
         for (int i = minY; i <= maxY; i++) {
             xIdx = 1;
             for (int j = minX; j <= maxX; j++) {
                 Vector2d position = new Vector2d(j, i);
                 List<WorldElement> worldElements = worldMap.objectsAt(position);
 
+                StackPane cellPane = new StackPane();
                 Text node;
                 if (worldElements != null && !worldElements.isEmpty()) {
-                    node = new Text(worldElements.getLast().toString());
+                    String repr = worldElements.getLast().toString();
+                    node = new Text(repr);
 
-                    // Jeśli to pole wybranego zwierzaka, zmieniamy styl
-                    if (selectedAnimal != null) {
-                        node.setStyle("-fx-background-color: yellow; -fx-border-color: red; -fx-font-weight: bold;");
+                    if (repr.equals("*") || repr.equals("$")) {
+                        cellPane.setStyle("-fx-background-color: darkgreen;");
+                    }
+
+                    if (selectedAnimal != null && worldElements.contains(selectedAnimal)) {
+                        cellPane.setStyle("-fx-background-color: yellow; -fx-border-color: red; -fx-font-weight: bold;");
                     }
                 } else {
                     node = new Text(" ");
                 }
 
-                //obsługę kliknięcia
-                node.setOnMouseClicked(event -> handleCellClick(position));
+                cellPane.getChildren().add(node);
 
-                gridPane.add(node, xIdx, yIdx);
-                GridPane.setHalignment(node, HPos.CENTER);
-                GridPane.setValignment(node, VPos.CENTER);
+                cellPane.setOnMouseClicked(event -> handleCellClick(position));
+
+                gridPane.add(cellPane, xIdx, yIdx);
+                GridPane.setHalignment(cellPane, HPos.CENTER);
+                GridPane.setValignment(cellPane, VPos.CENTER);
                 xIdx += 1;
             }
             yIdx -= 1;
         }
 
-        gridPane.setStyle("-fx-text-alignment: CENTER");
+        gridPane.setStyle("-fx-text-alignment: CENTER; -fx-background-color: lightgreen;");
         gridPane.setGridLinesVisible(false);
         gridPane.setGridLinesVisible(true);
     }
-
 
     private void rows(int maxY, int minY) {
         int row_idx = maxY;
@@ -149,12 +151,9 @@ public class SimulationPresenter implements MapChangeListener {
     }
 
     private void updateSelectedAnimalStatistics() {
-        if (selectedAnimal.isAlive() && selectedAnimal != null) {
+        if (selectedAnimal != null && selectedAnimal.isAlive()) {
             String statsText = String.valueOf(selectedAnimal.getAnimalStats());
-            statsText = statsText.replaceAll("\\{", "\n")
-                    .replaceAll("\\}", "")
-                    .replaceAll(",", "\n")
-                    .replaceAll("=", ": ");
+            System.out.println(statsText);
             animalTextArea.setText(statsText);
         }
         else{
@@ -163,23 +162,30 @@ public class SimulationPresenter implements MapChangeListener {
     }
 
     private void handleCellClick(Vector2d position) {
+        System.out.println("Kliknięto na pozycję: " + position);
 
         List<WorldElement> worldElements = worldMap.objectsAt(position);
         if (worldElements != null) {
+            System.out.println("Znaleziono elementy: " + worldElements);
             for (WorldElement element : worldElements) {
-                if (element instanceof Animal) {
-                    selectedAnimal = (Animal) element;
-                    System.out.println("Wybrany");
+                System.out.println("Sprawdzanie elementu: " + element + ", typ: " + element.getClass().getName());
+
+                if (element instanceof AbstractAnimal) {
+                    selectedAnimal = (AbstractAnimal) element;
+                    System.out.println("Wybrano zwierzaka: " + selectedAnimal);
                     updateSelectedAnimalStatistics();
                     drawMap();
                     return;
                 }
             }
+        } else {
+            System.out.println("Brak elementów na tej pozycji.");
         }
-        selectedAnimal = null;
+
         updateSelectedAnimalStatistics();
         drawMap();
     }
+
 
     private void updateStatisticsDisplay(){
         if (worldMap == null || worldMap.getStatistics() == null) {

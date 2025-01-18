@@ -73,15 +73,14 @@ public class SimulationStatistics {
 
     @Override
     public String toString() {
-        return "SimulationStatistics{" +
-                "animalNo=" + animalNo +
-                ", plantNo=" + plantNo +
-                ", freePlacesNo=" + freePlacesNo +
-                ", mostCommonGen=" + mostCommonGen +
-                ", avgEnergy=" + avgEnergy +
-                ", deathAnimalAvgLifetime=" + deathAnimalAvgLifetime +
-                ", avgChildNo=" + avgChildNo +
-                '}';
+        return
+                "Liczba zwierząt: " + animalNo + "\n" +
+                "Liczba roślin: " + plantNo + "\n" +
+                "Liczba wolnych miejsc: " + freePlacesNo + "\n" +
+                "Najczęstszy gen: " + mostCommonGen + "\n" +
+                "Średnia energia: " + avgEnergy + "\n" +
+                "Średnia długość życia martwych zwierząt: " + deathAnimalAvgLifetime + "\n" +
+                "Średnia liczba dzieci: " + avgChildNo;
     }
 
 }

@@ -23,6 +23,21 @@ public class AnimalStatistics {
         this.genList.addAll(genList);
     }
 
+    public String toString() {
+        return
+                "Typ: " + animalType + "\n" +
+                "Wiek: " + age + "\n" +
+                "Energia: " + energy + "\n" +
+                "Kierunek: " + direction + "\n" +
+                "Pozycja: " + position + "\n" +
+                "Liczba dzieci: " + childNo + "\n" +
+                "Zjedzone rośliny: " + eatenPlants + "\n" +
+                "Obecny indeks genetyczny: " + currentGenIdx + "\n" +
+                "Aktualna genetyka: " + (genList.size() > currentGenIdx ? genList.get(currentGenIdx) : "Brak") + "\n" +
+                "Lista genów: " + genList + "\n" +
+                "Dzień śmierci: " + (deathDay != 0 ? deathDay : "Niezdefiniowany");
+    }
+
     public int getEnergy() {
         return energy;
     }
