@@ -19,14 +19,14 @@ class AnimalTest {
         AbstractAnimal basicAnimal = new Animal(new Vector2d(2, 2), MapDirection.NORTH, genotype, 10);
 
         assertEquals(new Vector2d(2, 2), basicAnimal.getPosition());
-        assertEquals(10, basicAnimal.getEnergy());
+        assertEquals(10, basicAnimal.getAnimalStats().getEnergy());
     }
 
     @Test
     void testAnimalMovement() throws IncorrectPositionException {
         List<Integer> genotype = List.of(1, 2, 2, 5);
         Animal basicAnimal = new Animal(new Vector2d(4, 4), MapDirection.NORTH, genotype, 10);
-        basicAnimal.changeDirection(0);
+        basicAnimal.getAnimalStats().changeDirection(0);
         SimpleWorldMap regularWorld = new SimpleWorldMap(10, 10,0);
 
         regularWorld.place(basicAnimal);
@@ -53,8 +53,8 @@ class AnimalTest {
         regularWorld.reproduce(50, 20, 0, 0);
 
         //Sprawdzenie energii rodziców
-        assertEquals(80, parentA.getEnergy()); //100-20
-        assertEquals(60, parentB.getEnergy()); //60-20
+        assertEquals(80, parentA.getAnimalStats().getEnergy()); //100-20
+        assertEquals(60, parentB.getAnimalStats().getEnergy()); //60-20
 
         List<WorldElement> animals = regularWorld.objectsAt(new Vector2d(4, 4));
         assertEquals(3, animals.size()); // 2 rodziców + 1 dziecko
@@ -62,15 +62,15 @@ class AnimalTest {
         AbstractAnimal child = (AbstractAnimal) animals.stream().filter(animal -> animal != parentA && animal != parentB).findFirst().orElse(null);
         assertNotNull(child);
 
-        assertEquals(40, child.getEnergy());
+        assertEquals(40, child.getAnimalStats().getEnergy());
 
-        List<Integer> childGenotype = child.getGenList();
+        List<Integer> childGenotype = child.getAnimalStats().getGenList();
         assertEquals(4, childGenotype.size());
 
 
-        assertTrue(Objects.equals(child.getGenList(), List.of(1, 2, 6, 7)) || Objects.equals(child.getGenList(), List.of(4, 5, 3, 4)));
+        assertTrue(Objects.equals(child.getAnimalStats().getGenList(), List.of(1, 2, 6, 7)) || Objects.equals(child.getAnimalStats().getGenList(), List.of(4, 5, 3, 4)));
         //assertEquals(1, parentA.getNumberOfDescendants());
-        assertEquals(1, parentB.getChildNo());
+        assertEquals(1, parentB.getAnimalStats().getChildNo());
     }
 
     @Test
@@ -92,14 +92,14 @@ class AnimalTest {
         for (int i = 0; i < 5; i++) {
             regularWorld.moveAllAnimals();
         }
-        regularWorld.deleteDeathAnimals();
+        regularWorld.deleteDeathAnimals(123);
 
         assertFalse(child.isAlive());
-        assertEquals(5, parentA.getAge());
-        assertEquals(5, parentB.getAge());
+        assertEquals(5, parentA.getAnimalStats().getAge());
+        assertEquals(5, parentB.getAnimalStats().getAge());
         //assertEquals(5, child.getDayOfDeath());
         assertTrue(parentA.isAlive());
-        assertEquals(34, parentB.getEnergy());
+        assertEquals(34, parentB.getAnimalStats().getEnergy());
     }
 
     @Test
@@ -113,7 +113,7 @@ class AnimalTest {
         regularWorld.addPlantAtPosition(new Vector2d(4, 4));
         regularWorld.plantEating(20,20);
 
-        assertEquals(30, basicAnimal.getEnergy());
+        assertEquals(30, basicAnimal.getAnimalStats().getEnergy());
     }
 
     @Test

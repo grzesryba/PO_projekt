@@ -178,7 +178,8 @@ public class GoodHarvestMap extends AbstractWorldMap {
             if (!animalsAtGrassPositions.isEmpty()) {
                 List<AbstractAnimal> abstractAnimals = sortAnimals(animalsAtGrassPositions);
                 AbstractAnimal firstAnimal = abstractAnimals.getFirst();
-                firstAnimal.energy = firstAnimal.energy + extraEnergyBigGrass;
+                firstAnimal.getAnimalStats().setEnergy(firstAnimal.getAnimalStats().getEnergy() + extraEnergyBigGrass);
+                firstAnimal.getAnimalStats().addEatenPlant();
                 toRemove.add(grass);
                 cnt += 1;
             }

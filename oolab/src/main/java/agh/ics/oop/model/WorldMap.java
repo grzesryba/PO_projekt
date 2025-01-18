@@ -65,7 +65,11 @@ public interface WorldMap extends MoveValidator {
 
     void moveAllAnimals();
 
-    void deleteDeathAnimals();
+    void deleteDeathAnimals(int deathDay);
 
     void alertListeners(String message);
+
+    void updateStats();
+
+    SimulationStatistics getStatistics();
 }

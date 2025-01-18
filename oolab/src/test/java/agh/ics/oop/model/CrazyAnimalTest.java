@@ -14,7 +14,7 @@ class CrazyAnimalTest {
         CrazyAnimal crazyAnimal = new CrazyAnimal(new Vector2d(2, 2), MapDirection.NORTH, genotype, 10);
 
         assertEquals(new Vector2d(2, 2),crazyAnimal.getPosition());
-        assertEquals(10, crazyAnimal.getEnergy());
+        assertEquals(10, crazyAnimal.getAnimalStats().getEnergy());
         assertTrue(crazyAnimal.isAlive());
     }
 
@@ -50,7 +50,7 @@ class CrazyAnimalTest {
         animal.move(map);
 
         // THEN
-        assertEquals(MapDirection.EAST, animal.getDirection());
+        assertEquals(MapDirection.EAST, animal.getAnimalStats().getDirection());
     }
 
 }

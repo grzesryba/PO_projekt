@@ -27,6 +27,8 @@
             <Button onAction="#StartSimulation" style="-fx-pref-width: 200; -fx-pref-height: 30">
                 Start
             </Button>
+            <Button fx:id="pauseButton" onAction="#PauseSimulation" text="Pause" style="-fx-pref-width: 100; -fx-pref-height: 30"/>
+            <Button fx:id="resumeButton" onAction="#ResumeSimulation" text="Resume" style="-fx-pref-width: 100; -fx-pref-height: 30"/>
         </HBox>
         <!--        <TextArea fx:id="textArea" style="-fx-font-size: 25px"/>-->
     </bottom>

@@ -9,6 +9,7 @@ public abstract class AbstractWorldMap implements WorldMap {
     protected final int id = this.hashCode();
     protected List<AbstractAnimal> animalList = new ArrayList<>();
     protected Map<Vector2d, ArrayList<AbstractAnimal>> animals = new HashMap<>();
+    private final SimulationStatistics statistics = new SimulationStatistics();
 
     public int getWidth() {
         return width;
@@ -37,11 +38,14 @@ public abstract class AbstractWorldMap implements WorldMap {
     protected int maxY = 0;
     protected List<MapChangeListener> listeners = new ArrayList<>();
 
+    private int deathNo = 0;
+    private int ageCounter = 0;
+
     @Override
     public void move(AbstractAnimal animal) {
         Vector2d oldPosition = animal.getPosition();
-        MapDirection oldDirection = animal.getDirection();
-        if (animal.getEnergy() > 0) {
+        MapDirection oldDirection = animal.getAnimalStats().getDirection();
+        if (animal.getAnimalStats().getEnergy() > 0) {
             animal.move(this);
         }
         Vector2d newPosition = animal.getPosition();
@@ -158,7 +162,8 @@ public abstract class AbstractWorldMap implements WorldMap {
             if (animalsAtPosition != null && !animalsAtPosition.isEmpty()) {
                 List<AbstractAnimal> collect = sortAnimals(animalsAtPosition);
                 AbstractAnimal first = collect.getFirst();
-                first.setEnergy(first.getEnergy() + extraEnergy);
+                first.getAnimalStats().setEnergy(first.getAnimalStats().getEnergy() + extraEnergy);
+                first.getAnimalStats().addEatenPlant();
                 grassToRemove.add(position);
 
             }
@@ -176,9 +181,9 @@ public abstract class AbstractWorldMap implements WorldMap {
     protected static List<AbstractAnimal> sortAnimals(List<AbstractAnimal> animalsAtPosition) {
         Random random = new Random();
         return animalsAtPosition.stream()
-                .sorted(Comparator.comparingInt(AbstractAnimal::getEnergy)
-                        .thenComparing(AbstractAnimal::getAge)
-                        .thenComparing(AbstractAnimal::getChildNo)
+                .sorted(Comparator.comparingInt(animal -> ((AbstractAnimal) animal).getAnimalStats().getEnergy())
+                        .thenComparing(animal -> ((AbstractAnimal) animal).getAnimalStats().getAge())
+                        .thenComparing(animal -> ((AbstractAnimal) animal).getAnimalStats().getChildNo())
                         .thenComparing(v -> random.nextInt())).collect(Collectors.toList());
     }
 
@@ -217,8 +222,6 @@ public abstract class AbstractWorldMap implements WorldMap {
     }
 
 
-
-
     private void addNormalProbabilityGrass() {
         Random random = new Random();
         int idx = random.nextInt(normalProbabilityGrassFreePositions.size());
@@ -239,15 +242,15 @@ public abstract class AbstractWorldMap implements WorldMap {
         for (Vector2d position : animals.keySet()) {
             if (animals.get(position).size() >= 2) {
                 List<AbstractAnimal> sortedAnimals = sortAnimals(animals.get(position));
-                if (sortedAnimals.get(1).getEnergy() > sexRequiredEnergy) {
+                if (sortedAnimals.get(1).getAnimalStats().getEnergy() > sexRequiredEnergy) {
                     AbstractAnimal aAnimal = sortedAnimals.get(0);
                     AbstractAnimal bAnimal = sortedAnimals.get(1);
-                    int aEnergy = aAnimal.getEnergy();
-                    int bEnergy = bAnimal.getEnergy();
-                    List<Integer> aGenList = aAnimal.getGenList();
-                    List<Integer> bGenList = bAnimal.getGenList();
+                    int aEnergy = aAnimal.getAnimalStats().getEnergy();
+                    int bEnergy = bAnimal.getAnimalStats().getEnergy();
+                    List<Integer> aGenList = aAnimal.getAnimalStats().getGenList();
+                    List<Integer> bGenList = bAnimal.getAnimalStats().getGenList();
                     float percent = (float) aEnergy / (aEnergy + bEnergy);
-                    int aGenNo = Math.max(Math.round(aGenList.size() * percent),1);
+                    int aGenNo = Math.max(Math.round(aGenList.size() * percent), 1);
                     int bGenNo = bGenList.size() - aGenNo;
                     Random random = new Random();
                     List<Integer> newGenList = new ArrayList<>();
@@ -256,10 +259,10 @@ public abstract class AbstractWorldMap implements WorldMap {
 //                    System.out.println("A: " + aGenList + " " + aEnergy + " " + aGenNo + " " + bGenList + " " + bEnergy + " " + bGenNo);
                     if (random.nextInt(2) == 0) {
                         newGenList.addAll(aGenList.subList(0, aGenNo));
-                        newGenList.addAll(bGenList.subList(bGenList.size() - bGenNo , bGenList.size()));
+                        newGenList.addAll(bGenList.subList(bGenList.size() - bGenNo, bGenList.size()));
                     } else {
                         newGenList.addAll(bGenList.subList(0, bGenNo));
-                        newGenList.addAll(aGenList.subList(aGenList.size() - aGenNo , aGenList.size()));
+                        newGenList.addAll(aGenList.subList(aGenList.size() - aGenNo, aGenList.size()));
                     }
 
                     //Mutacje
@@ -269,19 +272,19 @@ public abstract class AbstractWorldMap implements WorldMap {
                     }
 
                     AbstractAnimal newAnimal = AnimalFactory.createAnimal(
-                            aAnimal.animalType,
+                            aAnimal.getAnimalStats().getAnimalType(),
                             aAnimal.getPosition(),
                             MapDirection.values()[random.nextInt(8)],
                             newGenList,
                             2 * reproduceRequiredEnergy);
 
-                    aAnimal.setEnergy(aAnimal.getEnergy() - reproduceRequiredEnergy);
-                    bAnimal.setEnergy(bAnimal.getEnergy() - reproduceRequiredEnergy);
+                    aAnimal.getAnimalStats().setEnergy(aAnimal.getAnimalStats().getEnergy() - reproduceRequiredEnergy);
+                    bAnimal.getAnimalStats().setEnergy(bAnimal.getAnimalStats().getEnergy() - reproduceRequiredEnergy);
 
                     addAnimalToMap(newAnimal, newAnimal.getPosition());
                     animalList.add(newAnimal);
-                    aAnimal.childNo += 1;
-                    bAnimal.childNo += 1;
+                    aAnimal.getAnimalStats().addChild();
+                    bAnimal.getAnimalStats().addChild();
                 }
             }
         }
@@ -293,20 +296,23 @@ public abstract class AbstractWorldMap implements WorldMap {
         }
     }
 
-    public void deleteDeathAnimals() {
+    public void deleteDeathAnimals(int day) {
         List<AbstractAnimal> animalsToRemove = new ArrayList<>();
         int cnt = 0;
         for (int i = 0; i < animalList.size(); i++) {
-            if (animalList.get(i).getEnergy() <= 0) {
+            if (animalList.get(i).getAnimalStats().getEnergy() <= 0) {
                 animalsToRemove.add(animalList.get(i));
-                this.deleteAnimal(animalList.get(i));
                 cnt += 1;
+                deathNo += 1;
+                ageCounter += animalList.get(i).getAnimalStats().getAge();
+                this.deleteAnimal(animalList.get(i));
             }
         }
         for (AbstractAnimal animal : animalsToRemove) {
             animalList.remove(animal);
+            animal.getAnimalStats().setDeathDay(day);
         }
-        if(cnt > 0) {
+        if (cnt > 0) {
 //            alertListeners(cnt + " Animals removed");
         }
     }
@@ -317,5 +323,39 @@ public abstract class AbstractWorldMap implements WorldMap {
         animals.get(position).remove(animal);
     }
 
+    public SimulationStatistics getStatistics() {
+        return statistics;
+    }
 
+    @Override
+    public void updateStats() {
+        int animalNo = animalList.size();
+        int plantNo = grasses.keySet().size();
+        int freePlaces = 0;
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
+                if (!isOccupied(new Vector2d(i, j))) {
+                    freePlaces += 1;
+                }
+            }
+        }
+        Map<Integer, Integer> genNo = new HashMap<>(Map.of(0, 0, 1, 0, 2, 0, 3, 0, 4, 0, 5, 0, 6, 0, 7, 0));
+        int maxGen = -1;
+        int max = 0;
+        for (AbstractAnimal animal : animalList) {
+            int gen = animal.getAnimalStats().getCurrentGen();
+            Integer a = genNo.get(gen);
+            genNo.put(gen, a + 1);
+            if (a + 1 > max) {
+                max = a + 1;
+                maxGen = gen;
+            }
+        }
+        int sumEnergy = animalList.stream().map(animal -> animal.getAnimalStats().getEnergy()).reduce(Integer::sum).orElse(0);
+        int avgEnergy = !animalList.isEmpty() ? sumEnergy / animalList.size() : 0;
+        int deadAnimalAvgLifetime = deathNo > 0 ? ageCounter / deathNo : 0;
+        int sumChild = animalList.stream().map(animal -> animal.getAnimalStats().getChildNo()).reduce(Integer::sum).orElse(0);
+        int avgChild = !animalList.isEmpty() ? sumChild / animalList.size() : 0;
+        statistics.setStats(animalNo, plantNo, freePlaces, maxGen, avgEnergy, deadAnimalAvgLifetime, avgChild);
+    }
 }

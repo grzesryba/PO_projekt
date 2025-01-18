@@ -6,6 +6,7 @@ import agh.ics.oop.SimulationEngine;
 import agh.ics.oop.model.*;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
 import javafx.scene.control.Label;
@@ -29,6 +30,7 @@ public class SimulationPresenter implements MapChangeListener {
     private final int mapWidth = 350;
     private int cellWidth;
     private int cellHeight;
+    private Simulation simulation;
 
     public void setWorldMap(WorldMap worldMap) {
         this.worldMap = worldMap;
@@ -128,12 +130,31 @@ public class SimulationPresenter implements MapChangeListener {
         int plusGrass = 10;
         int extraEnergy = 2;
         int extraEnergyBigGrass = 2;
-        int animalNo = 3;
+        int animalNo = 5;
         int animalGenLength = 50;
-        Simulation simulation = new Simulation(map, animalGenLength, animalNo, startEnergy, sexRequiredEnergy, reproduceRequiredEnergy, minMutationNo, maxMutationNo, plusGrass, extraEnergy, extraEnergyBigGrass);
+        AnimalType type = AnimalType.CRAZY;
+        Simulation simulation = new Simulation(map, animalGenLength, animalNo, startEnergy, sexRequiredEnergy, reproduceRequiredEnergy, minMutationNo, maxMutationNo, plusGrass, extraEnergy, extraEnergyBigGrass,type);
         SimulationEngine engine = new SimulationEngine(List.of(simulation));
+        this.simulation = simulation;
+
         new Thread(() -> {
             engine.runSync();
         }).start();
+    }
+
+    @FXML
+    public void PauseSimulation() {
+        if (simulation != null) {
+            simulation.PauseSimulation();
+            System.out.println("Simulation paused from Presenter.");
+        }
+    }
+
+    @FXML
+    public void ResumeSimulation() {
+        if (simulation != null) {
+            simulation.ResumeSimulation();
+            System.out.println("Simulation resumed from Presenter.");
+        }
     }
 }

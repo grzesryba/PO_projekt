@@ -28,7 +28,7 @@ class SimpleWorldMapTest {
 
         map.plantEating(20, 30);
 
-        assertEquals(30, animal.getEnergy());
+        assertEquals(30, animal.getAnimalStats().getEnergy());
 
         map.move(animal);
 

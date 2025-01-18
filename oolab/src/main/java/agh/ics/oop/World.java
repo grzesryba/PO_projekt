@@ -10,17 +10,17 @@ public class World {
 
 
 //        settings:
-        int width = 11;
-        int height = 11;
+        int width = 10;
+        int height = 10;
         int grassNo = 8;
 
 //        WARIANT MAPY (WZROSTU ROŚLIN)
-//        AbstractWorldMap map = new SimpleWorldMap(width,height,grassNo);
-        AbstractWorldMap map = new GoodHarvestMap(width, height, grassNo);
+        AbstractWorldMap map = new SimpleWorldMap(width,height,grassNo);
+//        AbstractWorldMap map = new GoodHarvestMap(width, height, grassNo);
 
-        int extraEnergy = 2;
+        int extraEnergy = 1;
         int extraEnergyBigGrass = 6;
-        int plusGrass = 0;
+        int plusGrass = 3;
         int animalNo = 2;
         int animalStartEnergy = 10;
         int sexRequiredEnergy = 4;
@@ -34,11 +34,7 @@ public class World {
 
         ConsoleMapDisplay listener = new ConsoleMapDisplay();
         map.addListener(listener);
-        List<MoveDirection> moves = new ArrayList<>();
 
-        for (int i = 0; i < 20; i++) {
-            moves.add(MoveDirection.FORWARD);
-        }
         Simulation simulation = new Simulation(
                 map,
                 genLength,
@@ -50,7 +46,8 @@ public class World {
                 maxMutationNo,
                 plusGrass,
                 extraEnergy,
-                extraEnergyBigGrass);
+                extraEnergyBigGrass,
+                type);
 
         simulation.run();
 
