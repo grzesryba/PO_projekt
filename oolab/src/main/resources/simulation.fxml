@@ -12,9 +12,10 @@
 <?import javafx.collections.FXCollections?>
 <?import agh.ics.oop.model.AnimalType?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.ScrollPane?>
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            minHeight="550.0" minWidth="850.0"
+            minHeight="550.0" maxHeight="800.0" minWidth="850.0"
             fx:controller="agh.ics.oop.presenter.SimulationPresenter">
     <top>
         <VBox style="-fx-spacing: 10; -fx-alignment: CENTER_RIGHT">
@@ -89,6 +90,28 @@
                 <TextField fx:id="animalTypeTextField" promptText="Enter Animal Type (CRAZY, NORMAL)" />
             </HBox>
 
+<!--            <HBox style="-fx-spacing: 10; -fx-alignment: CENTER_LEFT">-->
+<!--                <Label text="Simulation Statistics" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>-->
+<!--                <TextArea fx:id="textArea" prefWidth="300" prefHeight="100" wrapText="true" editable="false" />-->
+<!--            </HBox>-->
+            <HBox style="-fx-spacing: 10; -fx-alignment: CENTER_LEFT; -fx-padding: 0 0 0 20;">
+
+                <ScrollPane prefHeight="250" prefWidth="200">
+                    <TextArea fx:id="textArea" wrapText="true" editable="false" />
+                </ScrollPane>
+            </HBox>
+
+            <HBox style="-fx-spacing: 10; -fx-alignment: CENTER_LEFT; -fx-padding: 10;">
+                <VBox>
+                    <Label text="Selected Animal Stats:" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+                    <TextArea fx:id="animalStatsTextArea"
+                              promptText="No animal selected"
+                              wrapText="true"
+                              editable="false"
+                              prefWidth="300"
+                              prefHeight="150" />
+                </VBox>
+            </HBox>
 
 
         </VBox>
@@ -101,15 +124,15 @@
                       alignment="CENTER"
                       gridLinesVisible="true"
                       style="-fx-text-alignment: center;"
-                      AnchorPane.rightAnchor="20"
-                      AnchorPane.bottomAnchor="200" />
+                      AnchorPane.rightAnchor="50"
+                      AnchorPane.bottomAnchor="1050" />
         </AnchorPane>
     </center>
 
 
     <bottom>
         <HBox style="-fx-alignment: CENTER; -fx-padding: 10;">
-            <Button onAction="#StartSimulation" style="-fx-pref-width: 200; -fx-pref-height: 30">
+            <Button onAction="#StartSimulation" style="-fx-pref-width: 100; -fx-pref-height: 30">
                 Start
             </Button>
             <Button fx:id="pauseButton" onAction="#PauseSimulation" text="Pause" style="-fx-pref-width: 100; -fx-pref-height: 30"/>

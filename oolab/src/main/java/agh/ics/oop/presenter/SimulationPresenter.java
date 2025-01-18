@@ -23,6 +23,7 @@ import java.util.List;
 
 public class SimulationPresenter implements MapChangeListener {
 
+    public TextArea animalTextArea;
     public TextField animalTypeTextField;
     public TextField grassNumberTextField;
     public TextField extraEnergyBigGrassField;
@@ -47,6 +48,7 @@ public class SimulationPresenter implements MapChangeListener {
     private int cellWidth;
     private int cellHeight;
     private Simulation simulation;
+    private AbstractAnimal selectedAnimal = null;
 
     public void setWorldMap(WorldMap worldMap) {
         this.worldMap = worldMap;
@@ -57,37 +59,48 @@ public class SimulationPresenter implements MapChangeListener {
         int minY = worldMap.getCurrentBounds().leftBottom().getY();
         int maxX = worldMap.getCurrentBounds().rightTop().getX();
         int maxY = worldMap.getCurrentBounds().rightTop().getY();
-        cellHeight = mapHeight/(maxY-minY+1);
-        cellWidth = mapWidth/(maxX-minX+1);
+        cellHeight = mapHeight / (maxY - minY + 1);
+        cellWidth = mapWidth / (maxX - minX + 1);
 
         columns(maxX, minX);
         rows(maxY, minY);
 
-        int y_idx = maxY - minY + 1;
-        int x_idx = 1;
+        int yIdx = maxY - minY + 1;
+        int xIdx = 1;
         for (int i = minY; i <= maxY; i++) {
-            x_idx = 1;
+            xIdx = 1;
             for (int j = minX; j <= maxX; j++) {
-                List<WorldElement> worldElements = worldMap.objectsAt(new Vector2d(j, i));
-                if (worldElements != null) {
-                    Text node = new Text(worldElements.getLast().toString());
-                    gridPane.add(node, x_idx, y_idx);
-                    GridPane.setHalignment(node, HPos.CENTER);
-                    GridPane.setValignment(node, VPos.CENTER);
+                Vector2d position = new Vector2d(j, i);
+                List<WorldElement> worldElements = worldMap.objectsAt(position);
+
+                Text node;
+                if (worldElements != null && !worldElements.isEmpty()) {
+                    node = new Text(worldElements.getLast().toString());
+
+                    // Jeśli to pole wybranego zwierzaka, zmieniamy styl
+                    if (selectedAnimal != null) {
+                        node.setStyle("-fx-background-color: yellow; -fx-border-color: red; -fx-font-weight: bold;");
+                    }
                 } else {
-                    gridPane.add(new Text(" "), x_idx, y_idx);
+                    node = new Text(" ");
                 }
-                x_idx += 1;
+
+                //obsługę kliknięcia
+                node.setOnMouseClicked(event -> handleCellClick(position));
+
+                gridPane.add(node, xIdx, yIdx);
+                GridPane.setHalignment(node, HPos.CENTER);
+                GridPane.setValignment(node, VPos.CENTER);
+                xIdx += 1;
             }
-            y_idx -= 1;
+            yIdx -= 1;
         }
 
         gridPane.setStyle("-fx-text-alignment: CENTER");
         gridPane.setGridLinesVisible(false);
         gridPane.setGridLinesVisible(true);
-
-        //        textArea.setText(worldMap.toString());
     }
+
 
     private void rows(int maxY, int minY) {
         int row_idx = maxY;
@@ -130,7 +143,59 @@ public class SimulationPresenter implements MapChangeListener {
             gridPane.getRowConstraints().clear();
             //moveDescription.setText(message);
             drawMap();
+            updateStatisticsDisplay();
+            updateSelectedAnimalStatistics();
         });
+    }
+
+    private void updateSelectedAnimalStatistics() {
+        if (selectedAnimal.isAlive() && selectedAnimal != null) {
+            String statsText = String.valueOf(selectedAnimal.getAnimalStats());
+            statsText = statsText.replaceAll("\\{", "\n")
+                    .replaceAll("\\}", "")
+                    .replaceAll(",", "\n")
+                    .replaceAll("=", ": ");
+            animalTextArea.setText(statsText);
+        }
+        else{
+            animalTextArea.setText("Nie wybrałeś zwierzaka!");
+        }
+    }
+
+    private void handleCellClick(Vector2d position) {
+
+        List<WorldElement> worldElements = worldMap.objectsAt(position);
+        if (worldElements != null) {
+            for (WorldElement element : worldElements) {
+                if (element instanceof Animal) {
+                    selectedAnimal = (Animal) element;
+                    System.out.println("Wybrany");
+                    updateSelectedAnimalStatistics();
+                    drawMap();
+                    return;
+                }
+            }
+        }
+        selectedAnimal = null;
+        updateSelectedAnimalStatistics();
+        drawMap();
+    }
+
+    private void updateStatisticsDisplay(){
+        if (worldMap == null || worldMap.getStatistics() == null) {
+            return;
+        }
+        String statsText = String.valueOf(worldMap.getStatistics());
+
+        // Zmiana formatu stringa, aby było bardziej czytelne
+        statsText = statsText.replaceAll("\\{", "\n")
+                .replaceAll("\\}", "")
+                .replaceAll(",", "\n")
+                .replaceAll("=", ": ");
+
+
+        // Ustawienie sformatowanego tekstu w TextArea
+        textArea.setText(statsText);
     }
 
     public void StartSimulation(ActionEvent actionEvent) {

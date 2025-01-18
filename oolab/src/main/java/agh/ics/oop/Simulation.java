@@ -113,6 +113,7 @@ public class Simulation implements Runnable {
             System.out.println("Simulation resumed.");
         }
     }
+
     public List<AbstractAnimal> getAnimals() {
         return animals;
     }
