@@ -16,106 +16,32 @@
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             minHeight="550.0" maxHeight="800.0" minWidth="850.0"
-            fx:controller="agh.ics.oop.presenter.SimulationPresenter">
-    <top>
-        <VBox style="-fx-spacing: 10; -fx-alignment: CENTER_RIGHT">
+            fx:controller="agh.ics.oop.presenter.SimulationWindowController">
+    <left>
+        <VBox style="-fx-spacing: 10; -fx-padding: 10;" alignment="CENTER_LEFT">
+            <!-- Pierwszy blok: Simulation Stats -->
+            <VBox spacing="5">
+                <Label text="Simulation Stats:" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+                <TextArea fx:id="textArea"
+                          promptText="No simulation data yet"
+                          wrapText="true"
+                          editable="false"
+                          prefWidth="100"
+                          prefHeight="150" />
+            </VBox>
 
-            <HBox style="-fx-spacing: 10; -fx-alignment: CENTER_LEFT">
-                <Label text="Map Width:" style="-fx-pref-width: 150px" />
-                <TextField fx:id="widthField" promptText="Enter map width" />
-            </HBox>
-
-            <HBox style="-fx-spacing: 10; -fx-alignment: CENTER_LEFT">
-                <Label text="Map Height:" style="-fx-pref-width: 150px" />
-                <TextField fx:id="heightField" promptText="Enter map height" />
-            </HBox>
-
-            <HBox style="-fx-spacing: 10; -fx-alignment: CENTER_LEFT">
-                <Label text="Animal Gene Length:" style="-fx-pref-width: 150px" />
-                <TextField fx:id="animalGenLengthField" promptText="Enter gene length" />
-            </HBox>
-
-            <HBox style="-fx-spacing: 10; -fx-alignment: CENTER_LEFT">
-                <Label text="Animal Number:" style="-fx-pref-width: 150px" />
-                <TextField fx:id="animalNoTextField" promptText="Enter Animal Number"/>
-            </HBox>
-
-            <HBox style="-fx-spacing: 10; -fx-alignment: CENTER_LEFT">
-                <Label text="Start Energy:" style="-fx-pref-width: 150px" />
-                <TextField fx:id="startEnergyField" promptText="Enter start energy" />
-            </HBox>
-
-            <HBox style="-fx-spacing: 10; -fx-alignment: CENTER_LEFT">
-                <Label text="Energy for Reproduction:" style="-fx-pref-width: 150px" />
-                <TextField fx:id="sexRequiredEnergyField" promptText="Enter energy for reproduction" />
-            </HBox>
-
-            <HBox style="-fx-spacing: 10; -fx-alignment: CENTER_LEFT">
-                <Label text="Energy to Reproduce:" style="-fx-pref-width: 150px" />
-                <TextField fx:id="reproduceRequiredEnergyField" promptText="Enter energy to reproduce" />
-            </HBox>
-
-            <HBox style="-fx-spacing: 10; -fx-alignment: CENTER_LEFT">
-                <Label text="Minimum Mutations:" style="-fx-pref-width: 150px" />
-                <TextField fx:id="minMutationField" promptText="Enter minimum mutations" />
-            </HBox>
-
-            <HBox style="-fx-spacing: 10; -fx-alignment: CENTER_LEFT">
-                <Label text="Maximum Mutations:" style="-fx-pref-width: 150px" />
-                <TextField fx:id="maxMutationField" promptText="Enter maximum mutations" />
-            </HBox>
-
-            <HBox style="-fx-spacing: 10; -fx-alignment: CENTER_LEFT">
-                <Label text="Grass Growth per Step:" style="-fx-pref-width: 150px" />
-                <TextField fx:id="plusGrassField" promptText="Enter grass growth per step" />
-            </HBox>
-
-            <HBox style="-fx-spacing: 10; -fx-alignment: CENTER_LEFT">
-                <Label text="Extra Energy from Grass:" style="-fx-pref-width: 150px" />
-                <TextField fx:id="extraEnergyField" promptText="Enter extra energy from grass" />
-            </HBox>
-
-            <HBox style="-fx-spacing: 10; -fx-alignment: CENTER_LEFT">
-                <Label text="Extra Energy from Big Grass:" style="-fx-pref-width: 150px" />
-                <TextField fx:id="extraEnergyBigGrassField" promptText="Enter extra energy from big grass" />
-            </HBox>
-
-            <HBox style="-fx-spacing: 10; -fx-alignment: CENTER_LEFT">
-                <Label text="Grass Number:" style="-fx-pref-width: 150px" />
-                <TextField fx:id="grassNumberTextField" promptText="Enter grass number" />
-            </HBox>
-
-            <HBox style="-fx-spacing: 10; -fx-alignment: CENTER_LEFT">
-                <Label text="Animal Type (CRAZY,NORMAL):" style="-fx-pref-width: 150px" />
-                <TextField fx:id="animalTypeTextField" promptText="Enter Animal Type (CRAZY, NORMAL)" />
-            </HBox>
-
-            <HBox style="-fx-spacing: 320; -fx-alignment: CENTER; -fx-padding: 10;">
-                <!-- Pierwszy blok -->
-                <VBox spacing="5">
-                    <Label text="Simulation Stats:" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
-                    <TextArea fx:id="textArea"
-                              promptText="No simulation data yet"
-                              wrapText="true"
-                              editable="false"
-                              prefWidth="200"
-                              prefHeight="250" />
-                </VBox>
-
-                <!-- Drugi blok -->
-                <VBox spacing="5">
-                    <Label text="Selected Animal Stats:" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
-                    <TextArea fx:id="animalTextArea"
-                              promptText="No animal selected"
-                              wrapText="true"
-                              editable="false"
-                              prefWidth="200"
-                              prefHeight="250" />
-                </VBox>
-            </HBox>
-
+            <!-- Drugi blok: Selected Animal Stats -->
+            <VBox spacing="5">
+                <Label text="Selected Animal Stats:" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+                <TextArea fx:id="animalTextArea"
+                          promptText="No animal selected"
+                          wrapText="true"
+                          editable="false"
+                          prefWidth="100"
+                          prefHeight="250" />
+            </VBox>
         </VBox>
-    </top>
+    </left>
 
     <center>
         <AnchorPane>
@@ -124,16 +50,13 @@
                       gridLinesVisible="true"
                       style="-fx-text-alignment: center;"
                       AnchorPane.rightAnchor="50"
-                      AnchorPane.bottomAnchor="1050" />
+                      AnchorPane.bottomAnchor="50" />
         </AnchorPane>
     </center>
 
 
     <bottom>
         <HBox style="-fx-alignment: CENTER; -fx-padding: 10;">
-            <Button onAction="#StartSimulation" style="-fx-pref-width: 100; -fx-pref-height: 30">
-                Start
-            </Button>
             <Button fx:id="pauseButton" onAction="#PauseSimulation" text="Pause" style="-fx-pref-width: 100; -fx-pref-height: 30"/>
             <Button fx:id="resumeButton" onAction="#ResumeSimulation" text="Resume" style="-fx-pref-width: 100; -fx-pref-height: 30"/>
         </HBox>
