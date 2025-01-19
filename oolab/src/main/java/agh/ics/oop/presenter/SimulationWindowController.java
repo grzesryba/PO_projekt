@@ -9,8 +9,13 @@ import javafx.geometry.VPos;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.*;
+import javafx.scene.shape.Polygon;
 import javafx.scene.text.Text;
+import javafx.scene.shape.Circle;
+import javafx.scene.paint.Color;
+import javafx.scene.Node;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SimulationWindowController extends SimulationPresenter implements MapChangeListener {
@@ -24,15 +29,6 @@ public class SimulationWindowController extends SimulationPresenter implements M
     private int cellHeight;
     private Simulation simulation;
     private AbstractAnimal selectedAnimal = null;
-
-    @FXML
-    private void initialize() {
-        if (gridPane == null) {
-            System.err.println("gridPane nie zostało zainicjalizowane!");
-        } else {
-            System.out.println("gridPane zostało poprawnie zainicjalizowane.");
-        }
-    }
 
     public void setWorldMap(WorldMap worldMap) {
         this.worldMap = worldMap;
@@ -62,23 +58,74 @@ public class SimulationWindowController extends SimulationPresenter implements M
                 List<WorldElement> worldElements = worldMap.objectsAt(position);
 
                 StackPane cellPane = new StackPane();
-                Text node;
+                Node content = null;  // Używamy Node zamiast Text
+
                 if (worldElements != null && !worldElements.isEmpty()) {
                     String repr = worldElements.getLast().toString();
-                    node = new Text(repr);
 
-                    if (repr.equals("*") || repr.equals("$")) {
-                        cellPane.setStyle("-fx-background-color: darkgreen;");
+                    if (repr.equals("*")) {
+                        cellPane.setStyle("-fx-background-color: green;");
+                        Circle dot = new Circle(3, Color.DARKGREEN);
+                        content = dot;
+                    }
+                    else if (repr.equals("$")){
+                        cellPane.setStyle("-fx-background-color: green;");
+                        Circle dot = new Circle(5, Color.DARKGREEN);
+                        content = dot;
+                    } else if ((repr.length() <= 2) && !repr.equals("*") && !repr.equals("$")) {
+                        cellPane.setStyle("-fx-background-color: #524a2f;");
+
+                        double outerRadius = Math.min(cellWidth, cellHeight) * 0.3;
+                        double innerRadius = outerRadius * 0.5;
+                        double centerX = 0;
+                        double centerY = 0;
+                        double energy = 0;
+
+                        for (WorldElement element : worldElements) {
+                            if (element instanceof AbstractAnimal) {
+                                energy = ((AbstractAnimal) element).getAnimalStats().getEnergy();
+                                break;
+                            }
+                        }
+
+                        double avgEnergy = worldMap.getStatistics().getAvgEnergy();
+
+
+                        Color starColor;
+                        if (energy > avgEnergy) {
+                            starColor = Color.GREEN;
+                        } else if (energy > avgEnergy * 0.5) {
+                            starColor = Color.ORANGE;
+                        } else {
+                            starColor = Color.RED;
+                        }
+
+                        Polygon star = new Polygon(
+                                centerX, centerY - outerRadius,
+                                centerX + innerRadius, centerY - innerRadius,
+                                centerX + outerRadius, centerY,
+                                centerX + innerRadius, centerY + innerRadius,
+                                centerX, centerY + outerRadius,
+                                centerX - innerRadius, centerY + innerRadius,
+                                centerX - outerRadius, centerY,
+                                centerX - innerRadius, centerY - innerRadius
+                        );
+                        star.setFill(starColor);
+                        content = star;
+                    } else {
+                        content = new Text(repr);
                     }
 
                     if (selectedAnimal != null && worldElements.contains(selectedAnimal)) {
                         cellPane.setStyle("-fx-background-color: yellow; -fx-border-color: red; -fx-font-weight: bold;");
                     }
                 } else {
-                    node = new Text(" ");
+                    content = new Text(" ");
                 }
 
-                cellPane.getChildren().add(node);
+                if (content != null) {
+                    cellPane.getChildren().add(content);
+                }
 
                 cellPane.setOnMouseClicked(event -> handleCellClick(position));
 
@@ -129,7 +176,6 @@ public class SimulationWindowController extends SimulationPresenter implements M
 
     @Override
     public void mapChanged(WorldMap worldMap, String message) {
-        //        textArea.setText("");
         Platform.runLater(() -> {
             gridPane.getChildren().clear();
             gridPane.getColumnConstraints().clear();
@@ -153,19 +199,14 @@ public class SimulationWindowController extends SimulationPresenter implements M
     }
 
     private void handleCellClick(Vector2d position) {
-        System.out.println("Kliknięto na pozycję: " + position);
 
         List<WorldElement> worldElements = worldMap.objectsAt(position);
         if (worldElements != null) {
-            System.out.println("Znaleziono elementy: " + worldElements);
             for (WorldElement element : worldElements) {
-                System.out.println("Sprawdzanie elementu: " + element + ", typ: " + element.getClass().getName());
 
                 if (element instanceof AbstractAnimal) {
                     selectedAnimal = (AbstractAnimal) element;
-                    System.out.println("Wybrano zwierzaka: " + selectedAnimal);
                     updateSelectedAnimalStatistics();
-                    drawMap();
                     return;
                 }
             }
@@ -210,4 +251,72 @@ public class SimulationWindowController extends SimulationPresenter implements M
             System.out.println("Simulation resumed from Presenter.");
         }
     }
+
+//    public List<AbstractAnimal> getAnimalsWithDominantGen(WorldMap worldMap, int dominantGen) {
+//        List<AbstractAnimal> result = new ArrayList<>();
+//        int maxCount = -1;
+//
+//        int minX = worldMap.getCurrentBounds().leftBottom().getX();
+//        int minY = worldMap.getCurrentBounds().leftBottom().getY();
+//        int maxX = worldMap.getCurrentBounds().rightTop().getX();
+//        int maxY = worldMap.getCurrentBounds().rightTop().getY();
+//
+//        for (int x = minX; x <= maxX; x++) {
+//            for (int y = minY; y <= maxY; y++) {
+//                Vector2d position = new Vector2d(x, y);
+//                List<WorldElement> elements = worldMap.objectsAt(position);
+//                if (elements != null) {
+//                    for (WorldElement element : elements) {
+//                        if (element instanceof AbstractAnimal) {
+//                            AbstractAnimal animal = (AbstractAnimal) element;
+//                            int count = countGeneOccurrences( animal, dominantGen);
+//                            if (count > maxCount) {
+//                                maxCount = count;
+//                                result.clear();
+//                                result.add(animal);
+//                            } else if (count == maxCount) {
+//                                result.add(animal);
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//        return result;
+//    }
+//
+//    private int countGeneOccurrences(AbstractAnimal animal, int gene) {
+//        int count = 0;
+//        for (int g : animal.getAnimalStats().getGenList()) {
+//            if (animal.isAlive()) {
+//                if (g == gene) count++;
+//            }
+//        }
+//        return count;
+//    }
+//    @FXML
+//    private void showMoreDominantGen() {
+//        int dominantGen = worldMap.getStatistics().getMostCommonGen();
+//
+//        List<AbstractAnimal> dominantAnimals = getAnimalsWithDominantGen(worldMap, dominantGen);
+//
+//        for (AbstractAnimal animal : dominantAnimals) {
+//            Vector2d position = animal.getPosition();
+//            highlightAnimalAt(position);
+//        }
+//    }
+//
+//    private void highlightAnimalAt(Vector2d position) {
+//        for (Node node : gridPane.getChildren()) {
+//            Integer colIndex = GridPane.getColumnIndex(node);
+//            Integer rowIndex = GridPane.getRowIndex(node);
+//            if (colIndex != null && rowIndex != null
+//                    && colIndex.equals(position.getX())
+//                    && rowIndex.equals(position.getY())) {
+//
+//                node.setStyle("-fx-background-color: blue;");
+//
+//            }
+//        }
+//    }
 }

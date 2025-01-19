@@ -34,6 +34,7 @@ public class InputWindowController extends SimulationPresenter {
     @FXML public TextField grassNumberTextField;
     @FXML public TextField animalTypeTextField;
     @FXML public GridPane gridPane;
+    @FXML public TextField mapTypeField;
 
 
     private SimulationWindowController simulationController;
@@ -54,8 +55,16 @@ public class InputWindowController extends SimulationPresenter {
             int width = Integer.parseInt(widthField.getText());
             int height = Integer.parseInt(heightField.getText());
             int grassNo = Integer.parseInt(grassNumberTextField.getText());
-            AbstractWorldMap map = new GoodHarvestMap(width, height, grassNo);
-
+            String mapTypeInput = mapTypeField.getText().trim();
+            AbstractWorldMap map;
+            if (mapTypeInput.equalsIgnoreCase("GoodHarvestMap")) {
+                map = new GoodHarvestMap(width, height, grassNo);
+            } else if (mapTypeInput.equalsIgnoreCase("SimpleWorldMap")) {
+                map = new SimpleWorldMap(width, height, grassNo);
+            } else {
+                System.out.println("Invalid map type: " + mapTypeInput);
+                return;
+            }
             int sexRequiredEnergy = Integer.parseInt(sexRequiredEnergyField.getText());
             int reproduceRequiredEnergy = Integer.parseInt(reproduceRequiredEnergyField.getText());
             int minMutationNo = Integer.parseInt(minMutationField.getText());

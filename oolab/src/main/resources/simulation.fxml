@@ -59,6 +59,8 @@
         <HBox style="-fx-alignment: CENTER; -fx-padding: 10;">
             <Button fx:id="pauseButton" onAction="#PauseSimulation" text="Pause" style="-fx-pref-width: 100; -fx-pref-height: 30"/>
             <Button fx:id="resumeButton" onAction="#ResumeSimulation" text="Resume" style="-fx-pref-width: 100; -fx-pref-height: 30"/>
+            <!--<Button text="Show More" onAction="#showMoreDominantGen" /> -->
+
         </HBox>
         <!--        <TextArea fx:id="textArea" style="-fx-font-size: 25px"/>-->
     </bottom>

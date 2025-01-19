@@ -20,7 +20,6 @@ import java.util.List;
 public class SimulationApp extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException {
-        // Ładowanie okna wprowadzania danych
         FXMLLoader inputLoader = new FXMLLoader();
         inputLoader.setLocation(getClass().getClassLoader().getResource("inputWindow.fxml"));
         Parent inputRoot = inputLoader.load();
@@ -28,8 +27,6 @@ public class SimulationApp extends Application {
         Stage inputStage = new Stage();
         inputStage.setTitle("Wprowadź dane");
         inputStage.setScene(new Scene(inputRoot));
-
-        // Wyświetlenie okna wprowadzania danych
         inputStage.show();
     }
 

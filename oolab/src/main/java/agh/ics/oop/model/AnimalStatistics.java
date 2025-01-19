@@ -14,6 +14,8 @@ public class AnimalStatistics {
     private int childNo = 0;
     private int eatenPlants = 0;
     private int deathDay;
+    private final List<AnimalStatistics> children = new ArrayList<>();
+
 
     public AnimalStatistics(MapDirection direction, Vector2d position, int energy, AnimalType animalType, List<Integer> genList) {
         this.direction = direction;
@@ -49,6 +51,7 @@ public class AnimalStatistics {
     public int getChildNo() {
         return childNo;
     }
+
 
     public void addChild() {
         childNo += 1;

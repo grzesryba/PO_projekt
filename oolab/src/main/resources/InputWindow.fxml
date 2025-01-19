@@ -73,6 +73,10 @@
                 <Label text="Animal Type (CRAZY,NORMAL):" style="-fx-pref-width: 150px" />
                 <TextField fx:id="animalTypeTextField" promptText="Enter Animal Type (CRAZY, NORMAL)" />
             </HBox>
+            <HBox style="-fx-spacing: 10; -fx-alignment: CENTER_LEFT">
+                <Label text="Map Type (GoodHarvestMap, SimpleWorldMap):" style="-fx-pref-width: 250px" />
+                <TextField fx:id="mapTypeField" promptText="Enter map type" />
+            </HBox>
         </VBox>
     </HBox>
 
