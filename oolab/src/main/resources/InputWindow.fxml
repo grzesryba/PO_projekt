@@ -84,6 +84,11 @@
     <HBox alignment="CENTER" style="-fx-padding: 10;">
         <Button text="Start" onAction="#startSimulation"
                 style="-fx-pref-width: 100; -fx-pref-height: 30;"/>
+        <Button text="Load from CSV" onAction="#loadFromCSV"
+                style="-fx-pref-width: 150; -fx-pref-height: 30;"/>
+        <CheckBox fx:id="saveAsExampleCheckBox" text="Save as Example" onAction="#toggleExampleNameField" />
+        <TextField fx:id="exampleNameField" promptText="Enter configuration name"
+                   style="-fx-pref-width: 200;" visible="false" />
     </HBox>
 
 </VBox>
