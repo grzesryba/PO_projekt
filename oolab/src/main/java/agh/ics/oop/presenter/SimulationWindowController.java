@@ -14,7 +14,7 @@ import javafx.scene.text.Text;
 import java.util.List;
 
 public class SimulationWindowController extends SimulationPresenter implements MapChangeListener {
-    public GridPane gridPane;
+    @FXML public GridPane gridPane;
     public TextArea textArea;
     public TextArea animalTextArea;
     private WorldMap worldMap;
@@ -25,6 +25,14 @@ public class SimulationWindowController extends SimulationPresenter implements M
     private Simulation simulation;
     private AbstractAnimal selectedAnimal = null;
 
+    @FXML
+    private void initialize() {
+        if (gridPane == null) {
+            System.err.println("gridPane nie zostało zainicjalizowane!");
+        } else {
+            System.out.println("gridPane zostało poprawnie zainicjalizowane.");
+        }
+    }
 
     public void setWorldMap(WorldMap worldMap) {
         this.worldMap = worldMap;

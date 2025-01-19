@@ -29,18 +29,6 @@ public class SimulationApp extends Application {
         inputStage.setTitle("Wprowadź dane");
         inputStage.setScene(new Scene(inputRoot));
 
-        // Przygotowanie okna symulacji, ale bez wyświetlania
-        FXMLLoader simulationLoader = new FXMLLoader();
-        simulationLoader.setLocation(getClass().getClassLoader().getResource("simulation.fxml"));
-        BorderPane simulationRoot = simulationLoader.load();
-        SimulationPresenter simulationController = simulationLoader.getController();
-        configureStage(primaryStage, simulationRoot);
-        // Nie pokazujemy primaryStage tutaj; będzie pokazany po wprowadzeniu danych
-
-        // Przekazanie referencji do kontrolera wejściowego
-        inputController.setSimulationController((SimulationWindowController) simulationController);
-        inputController.setSimulationStage(primaryStage);
-
         // Wyświetlenie okna wprowadzania danych
         inputStage.show();
     }

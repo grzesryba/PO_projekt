@@ -256,4 +256,8 @@ public class SimulationPresenter implements MapChangeListener {
             System.out.println("Simulation resumed from Presenter.");
         }
     }
+
+    public void setSimulation(Simulation simulation) {
+        this.simulation = simulation;
+    }
 }
