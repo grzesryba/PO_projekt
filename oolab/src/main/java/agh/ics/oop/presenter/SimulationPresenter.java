@@ -140,9 +140,9 @@ public class SimulationPresenter implements MapChangeListener {
     public void mapChanged(WorldMap worldMap, String message) {
         //        textArea.setText("");
         Platform.runLater(() -> {
-            gridPane.getChildren().clear();
-            gridPane.getColumnConstraints().clear();
-            gridPane.getRowConstraints().clear();
+//            gridPane.getChildren().clear();
+//            gridPane.getColumnConstraints().clear();
+//            gridPane.getRowConstraints().clear();
             //moveDescription.setText(message);
             drawMap();
             updateStatisticsDisplay();

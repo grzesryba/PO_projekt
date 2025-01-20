@@ -60,7 +60,8 @@ public class SimulationStatistics {
     }
 
     public void writeToCsv(){
-        String filename = "stats " + id + ".csv";
+        String dir = "./Stats/";
+        String filename = dir + "stats " + id + ".csv";
         try (FileWriter writer = new FileWriter(filename)){
             writer.append("Day,AnimalNo,PlantNo,FreePlacesNo,MostPopularGen,AvgEnergy,DeathAnimalAvgLifetime,AvgChildNo\n");
             for (String line : fileLines) {

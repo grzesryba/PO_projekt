@@ -3,11 +3,11 @@ package agh.ics.oop.presenter;
 import agh.ics.oop.model.*;
 import agh.ics.oop.Simulation;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.shape.Polygon;
 import javafx.scene.text.Text;
@@ -16,12 +16,16 @@ import javafx.scene.paint.Color;
 import javafx.scene.Node;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public class SimulationWindowController extends SimulationPresenter implements MapChangeListener {
+public class SimulationWindowController implements MapChangeListener {
     @FXML public GridPane gridPane;
     public TextArea textArea;
     public TextArea animalTextArea;
+    public TextField simulationSpeedField;
+    public Button applySpeedButton;
     private WorldMap worldMap;
     private final int mapHeight = 350;
     private final int mapWidth = 350;
@@ -29,6 +33,8 @@ public class SimulationWindowController extends SimulationPresenter implements M
     private int cellHeight;
     private Simulation simulation;
     private AbstractAnimal selectedAnimal = null;
+    private Map<Vector2d, Node> cellMap = new HashMap<>();
+
 
     public void setWorldMap(WorldMap worldMap) {
         this.worldMap = worldMap;
@@ -36,6 +42,10 @@ public class SimulationWindowController extends SimulationPresenter implements M
 
     public void setSimulation(Simulation simulation) {
         this.simulation = simulation;
+    }
+
+    public Simulation getSimulation() {
+        return simulation;
     }
 
     public void drawMap() {
@@ -58,22 +68,27 @@ public class SimulationWindowController extends SimulationPresenter implements M
                 List<WorldElement> worldElements = worldMap.objectsAt(position);
 
                 StackPane cellPane = new StackPane();
-                Node content = null;  // Używamy Node zamiast Text
+                cellMap.put(position, cellPane);
+                Node content = null;
+
+                boolean[][] probability = worldMap.getProbabilityMap();
+                if(probability[i][j]){
+                    cellPane.setStyle("-fx-background-color: green;");
+                }
+
+
 
                 if (worldElements != null && !worldElements.isEmpty()) {
                     String repr = worldElements.getLast().toString();
 
                     if (repr.equals("*")) {
-                        cellPane.setStyle("-fx-background-color: green;");
                         Circle dot = new Circle(3, Color.DARKGREEN);
                         content = dot;
                     }
                     else if (repr.equals("$")){
-                        cellPane.setStyle("-fx-background-color: green;");
                         Circle dot = new Circle(5, Color.DARKGREEN);
                         content = dot;
                     } else if ((repr.length() <= 2) && !repr.equals("*") && !repr.equals("$")) {
-                        cellPane.setStyle("-fx-background-color: #524a2f;");
 
                         double outerRadius = Math.min(cellWidth, cellHeight) * 0.3;
                         double innerRadius = outerRadius * 0.5;
@@ -118,6 +133,7 @@ public class SimulationWindowController extends SimulationPresenter implements M
 
                     if (selectedAnimal != null && worldElements.contains(selectedAnimal)) {
                         cellPane.setStyle("-fx-background-color: yellow; -fx-border-color: red; -fx-font-weight: bold;");
+//                        showMoreDominantGen();
                     }
                 } else {
                     content = new Text(" ");
@@ -188,7 +204,7 @@ public class SimulationWindowController extends SimulationPresenter implements M
     }
 
     private void updateSelectedAnimalStatistics() {
-        if (selectedAnimal != null && selectedAnimal.isAlive()) {
+        if (selectedAnimal != null) {
             String statsText = String.valueOf(selectedAnimal.getAnimalStats());
             System.out.println(statsText);
             animalTextArea.setText(statsText);
@@ -252,71 +268,90 @@ public class SimulationWindowController extends SimulationPresenter implements M
         }
     }
 
-//    public List<AbstractAnimal> getAnimalsWithDominantGen(WorldMap worldMap, int dominantGen) {
-//        List<AbstractAnimal> result = new ArrayList<>();
-//        int maxCount = -1;
-//
-//        int minX = worldMap.getCurrentBounds().leftBottom().getX();
-//        int minY = worldMap.getCurrentBounds().leftBottom().getY();
-//        int maxX = worldMap.getCurrentBounds().rightTop().getX();
-//        int maxY = worldMap.getCurrentBounds().rightTop().getY();
-//
-//        for (int x = minX; x <= maxX; x++) {
-//            for (int y = minY; y <= maxY; y++) {
-//                Vector2d position = new Vector2d(x, y);
-//                List<WorldElement> elements = worldMap.objectsAt(position);
-//                if (elements != null) {
-//                    for (WorldElement element : elements) {
-//                        if (element instanceof AbstractAnimal) {
-//                            AbstractAnimal animal = (AbstractAnimal) element;
-//                            int count = countGeneOccurrences( animal, dominantGen);
-//                            if (count > maxCount) {
-//                                maxCount = count;
-//                                result.clear();
-//                                result.add(animal);
-//                            } else if (count == maxCount) {
-//                                result.add(animal);
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//        return result;
-//    }
-//
-//    private int countGeneOccurrences(AbstractAnimal animal, int gene) {
-//        int count = 0;
-//        for (int g : animal.getAnimalStats().getGenList()) {
-//            if (animal.isAlive()) {
-//                if (g == gene) count++;
-//            }
-//        }
-//        return count;
-//    }
-//    @FXML
-//    private void showMoreDominantGen() {
-//        int dominantGen = worldMap.getStatistics().getMostCommonGen();
-//
-//        List<AbstractAnimal> dominantAnimals = getAnimalsWithDominantGen(worldMap, dominantGen);
-//
-//        for (AbstractAnimal animal : dominantAnimals) {
-//            Vector2d position = animal.getPosition();
-//            highlightAnimalAt(position);
-//        }
-//    }
-//
-//    private void highlightAnimalAt(Vector2d position) {
-//        for (Node node : gridPane.getChildren()) {
-//            Integer colIndex = GridPane.getColumnIndex(node);
-//            Integer rowIndex = GridPane.getRowIndex(node);
-//            if (colIndex != null && rowIndex != null
-//                    && colIndex.equals(position.getX())
-//                    && rowIndex.equals(position.getY())) {
-//
-//                node.setStyle("-fx-background-color: blue;");
-//
-//            }
-//        }
-//    }
+    public List<AbstractAnimal> getAnimalsWithDominantGen(WorldMap worldMap, int dominantGen) {
+        List<AbstractAnimal> result = new ArrayList<>();
+        int maxCount = -1;
+
+        int minX = worldMap.getCurrentBounds().leftBottom().getX();
+        int minY = worldMap.getCurrentBounds().leftBottom().getY();
+        int maxX = worldMap.getCurrentBounds().rightTop().getX();
+        int maxY = worldMap.getCurrentBounds().rightTop().getY();
+
+        for (int x = minX; x <= maxX; x++) {
+            for (int y = minY; y <= maxY; y++) {
+                Vector2d position = new Vector2d(x, y);
+                List<WorldElement> elements = worldMap.objectsAt(position);
+                if (elements != null) {
+                    for (WorldElement element : elements) {
+                        if (element instanceof AbstractAnimal ) {
+                            AbstractAnimal animal = (AbstractAnimal) element;
+                            int count = countGeneOccurrences( animal, dominantGen);
+                            if (count > maxCount) {
+                                maxCount = count;
+                                result.clear();
+                                result.add(animal);
+                            } else if (count == maxCount) {
+                                result.add(animal);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    private int countGeneOccurrences(AbstractAnimal animal, int gene) {
+        int count = 0;
+        for (int g : animal.getAnimalStats().getGenList()) {
+            if (animal.isAlive()) {
+                if (g == gene) count++;
+            }
+        }
+        return count;
+    }
+    @FXML
+    private void showMoreDominantGen() {
+        int dominantGen = worldMap.getStatistics().getMostCommonGen();
+
+        List<AbstractAnimal> dominantAnimals = getAnimalsWithDominantGen(worldMap, dominantGen);
+
+        for (AbstractAnimal animal : dominantAnimals) {
+            Vector2d position = animal.getPosition();
+            highlightAnimalAt(position);
+        }
+    }
+
+    private void highlightAnimalAt(Vector2d position) {
+        Node cell = cellMap.get(position);
+        if (cell != null) {
+            cell.setStyle("-fx-border-color: blue; -fx-border-width: 2;");
+        } else {
+            System.err.println("Nie znaleziono komórki dla pozycji: " + position);
+        }
+    }
+
+    private void showErrorDialog(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    @FXML
+    private void applySimulationSpeed() {
+        try {
+            int delay = Integer.parseInt(simulationSpeedField.getText());
+            if (delay < 0) {
+                showErrorDialog("Simulation speed must be a non-negative number.");
+                return;
+            }
+            // Zakładamy, że istnieje metoda do ustawienia tempa symulacji
+            simulation.setSpeed(delay);
+            System.out.println("Simulation speed updated to " + delay + " ms.");
+        } catch (NumberFormatException e) {
+            showErrorDialog("Please enter a valid number for simulation speed.");
+        }
+    }
 }

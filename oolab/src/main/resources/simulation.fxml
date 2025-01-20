@@ -1,18 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.control.TextArea?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.control.ChoiceBox?>
-<?import javafx.collections.FXCollections?>
-<?import agh.ics.oop.model.AnimalType?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             minHeight="550.0" maxHeight="800.0" minWidth="850.0"
@@ -21,24 +10,24 @@
         <VBox style="-fx-spacing: 10; -fx-padding: 10;" alignment="CENTER_LEFT">
             <!-- Pierwszy blok: Simulation Stats -->
             <VBox spacing="5">
-                <Label text="Simulation Stats:" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+                <Label text="Simulation Stats:" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
                 <TextArea fx:id="textArea"
                           promptText="No simulation data yet"
                           wrapText="true"
                           editable="false"
                           prefWidth="100"
-                          prefHeight="150" />
+                          prefHeight="150"/>
             </VBox>
 
             <!-- Drugi blok: Selected Animal Stats -->
             <VBox spacing="5">
-                <Label text="Selected Animal Stats:" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+                <Label text="Selected Animal Stats:" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
                 <TextArea fx:id="animalTextArea"
                           promptText="No animal selected"
                           wrapText="true"
                           editable="false"
                           prefWidth="100"
-                          prefHeight="250" />
+                          prefHeight="250"/>
             </VBox>
         </VBox>
     </left>
@@ -50,19 +39,31 @@
                       gridLinesVisible="true"
                       style="-fx-text-alignment: center;"
                       AnchorPane.rightAnchor="50"
-                      AnchorPane.bottomAnchor="50" />
+                      AnchorPane.bottomAnchor="50"/>
         </AnchorPane>
     </center>
 
 
     <bottom>
-        <HBox style="-fx-alignment: CENTER; -fx-padding: 10;">
-            <Button fx:id="pauseButton" onAction="#PauseSimulation" text="Pause" style="-fx-pref-width: 100; -fx-pref-height: 30"/>
-            <Button fx:id="resumeButton" onAction="#ResumeSimulation" text="Resume" style="-fx-pref-width: 100; -fx-pref-height: 30"/>
-            <!--<Button text="Show More" onAction="#showMoreDominantGen" /> -->
+        <VBox spacing="10" style="-fx-alignment: CENTER; -fx-padding: 10;">
+            <HBox style="-fx-alignment: CENTER; -fx-padding: 10;">
+                <Button fx:id="pauseButton" onAction="#PauseSimulation" text="Pause"
+                        style="-fx-pref-width: 100; -fx-pref-height: 30"/>
+                <Button fx:id="resumeButton" onAction="#ResumeSimulation" text="Resume"
+                        style="-fx-pref-width: 100; -fx-pref-height: 30"/>
+                <Button text="Show Dominant Animal" onAction="#showMoreDominantGen"
+                        style="-fx-pref-width: 200; -fx-pref-height: 30"/>
 
-        </HBox>
-        <!--        <TextArea fx:id="textArea" style="-fx-font-size: 25px"/>-->
+            </HBox>
+            <!-- Pole tekstowe dla tempa symulacji -->
+            <HBox style="-fx-alignment: CENTER;" spacing="10">
+                <Label text="Simulation Speed (ms):"/>
+                <TextField fx:id="simulationSpeedField" promptText="Enter delay in ms"
+                           style="-fx-pref-width: 150;"/>
+                <Button fx:id="applySpeedButton" text="Apply" onAction="#applySimulationSpeed"/>
+            </HBox>
+            <!--        <TextArea fx:id="textArea" style="-fx-font-size: 25px"/>-->
+        </VBox>
     </bottom>
 
 </BorderPane>

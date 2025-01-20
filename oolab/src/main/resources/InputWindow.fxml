@@ -69,14 +69,18 @@
                 <Label text="Grass Number:" style="-fx-pref-width: 150px" />
                 <TextField fx:id="grassNumberTextField" promptText="Enter grass number" />
             </HBox>
+
+
             <HBox style="-fx-spacing: 10; -fx-alignment: CENTER_LEFT">
-                <Label text="Animal Type (CRAZY,NORMAL):" style="-fx-pref-width: 150px" />
-                <TextField fx:id="animalTypeTextField" promptText="Enter Animal Type (CRAZY, NORMAL)" />
+                <Label text="Animal Type (CRAZY, NORMAL):" style="-fx-pref-width: 150px" />
+                <ChoiceBox fx:id="animalTypeChoiceBox" style="-fx-pref-width: 200;" />
             </HBox>
             <HBox style="-fx-spacing: 10; -fx-alignment: CENTER_LEFT">
                 <Label text="Map Type (GoodHarvestMap, SimpleWorldMap):" style="-fx-pref-width: 250px" />
-                <TextField fx:id="mapTypeField" promptText="Enter map type" />
+                <ChoiceBox fx:id="mapTypeChoiceBox" style="-fx-pref-width: 200;" />
             </HBox>
+
+
         </VBox>
     </HBox>
 
@@ -84,6 +88,11 @@
     <HBox alignment="CENTER" style="-fx-padding: 10;">
         <Button text="Start" onAction="#startSimulation"
                 style="-fx-pref-width: 100; -fx-pref-height: 30;"/>
+        <Button text="Load from CSV" onAction="#loadFromCSV"
+                style="-fx-pref-width: 150; -fx-pref-height: 30;"/>
+        <CheckBox fx:id="saveAsExampleCheckBox" text="Save as Example" onAction="#toggleExampleNameField" />
+        <TextField fx:id="exampleNameField" promptText="Enter configuration name"
+                   style="-fx-pref-width: 200;" visible="false" />
     </HBox>
 
 </VBox>
