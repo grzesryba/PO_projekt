@@ -72,4 +72,7 @@ public interface WorldMap extends MoveValidator {
     void updateStats();
 
     SimulationStatistics getStatistics();
+
+    boolean[][] getProbabilityMap();
+
 }

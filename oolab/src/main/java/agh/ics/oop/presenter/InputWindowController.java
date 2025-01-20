@@ -7,12 +7,14 @@ import agh.ics.oop.model.AnimalType;
 import agh.ics.oop.model.GoodHarvestMap;
 import agh.ics.oop.model.SimpleWorldMap;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -23,7 +25,7 @@ import java.io.*;
 import java.net.URL;
 import java.util.List;
 
-public class InputWindowController extends SimulationPresenter {
+public class InputWindowController {
     @FXML
     public TextField widthField;
     @FXML
@@ -56,6 +58,9 @@ public class InputWindowController extends SimulationPresenter {
     public GridPane gridPane;
     @FXML
     public TextField mapTypeField;
+    public ChoiceBox<String> animalTypeChoiceBox;
+    @FXML
+    private ChoiceBox<String> mapTypeChoiceBox;
     @FXML
     private CheckBox saveAsExampleCheckBox;
     @FXML
@@ -64,6 +69,15 @@ public class InputWindowController extends SimulationPresenter {
 
     private SimulationWindowController simulationController;
     private Stage simulationStage;
+
+    @FXML
+    public void initialize() {
+        animalTypeChoiceBox.setItems(FXCollections.observableArrayList("CRAZY", "NORMAL"));
+        mapTypeChoiceBox.setItems(FXCollections.observableArrayList("GoodHarvestMap", "SimpleWorldMap"));
+
+        animalTypeChoiceBox.setValue("NORMAL");
+        mapTypeChoiceBox.setValue("GoodHarvestMap");
+    }
 
     public void setSimulationController(SimulationWindowController controller) {
         this.simulationController = controller;
@@ -80,7 +94,7 @@ public class InputWindowController extends SimulationPresenter {
             int width = Integer.parseInt(widthField.getText());
             int height = Integer.parseInt(heightField.getText());
             int grassNo = Integer.parseInt(grassNumberTextField.getText());
-            String mapTypeInput = mapTypeField.getText().trim();
+            String mapTypeInput = mapTypeChoiceBox.getValue();
             AbstractWorldMap map;
             if (mapTypeInput.equalsIgnoreCase("GoodHarvestMap")) {
                 map = new GoodHarvestMap(width, height, grassNo);
@@ -105,7 +119,7 @@ public class InputWindowController extends SimulationPresenter {
                 saveCurrentConfiguration();
             }
 
-            String animalTypeInput = animalTypeTextField.getText().trim().toUpperCase();
+            String animalTypeInput = animalTypeChoiceBox.getValue();
             AnimalType animalType;
             try {
                 animalType = AnimalType.valueOf(animalTypeInput);
@@ -114,7 +128,7 @@ public class InputWindowController extends SimulationPresenter {
                 return;
             }
 
-            map.addListener(this);
+//            map.addListener(this);
 
             Simulation simulation = new Simulation(
                     map, animalGenLength, animalNo, startEnergy,
@@ -138,6 +152,7 @@ public class InputWindowController extends SimulationPresenter {
 
             newSimController.setWorldMap(map);
             newSimController.setSimulation(simulation);
+            setSimulationController(newSimController);
 
             Stage newSimulationStage = new Stage();
             configureStage(newSimulationStage, simulationRoot);
@@ -187,8 +202,8 @@ public class InputWindowController extends SimulationPresenter {
                             extraEnergyField.setText(data[10]);
                             extraEnergyBigGrassField.setText(data[11]);
                             grassNumberTextField.setText(data[12]);
-                            animalTypeTextField.setText(data[13]);
-                            mapTypeField.setText(data[14]);
+                            animalTypeChoiceBox.setValue(data[13]);
+                            mapTypeChoiceBox.setValue(data[14]);
                         } else {
                             // Wyświetlenie błędu, jeśli liczba kolumn jest nieprawidłowa
                             showErrorDialog("Invalid CSV format. Please ensure the file has exactly 15 values.");
@@ -239,8 +254,8 @@ public class InputWindowController extends SimulationPresenter {
                         extraEnergyField.getText(),
                         extraEnergyBigGrassField.getText(),
                         grassNumberTextField.getText(),
-                        animalTypeTextField.getText(),
-                        mapTypeField.getText()
+                        animalTypeChoiceBox.getValue(),
+                        mapTypeChoiceBox.getValue()
                 );
                 writer.write(csvLine);
                 writer.newLine();
@@ -263,5 +278,8 @@ public class InputWindowController extends SimulationPresenter {
         stage.setTitle("Simulation app");
         stage.minWidthProperty().bind(viewRoot.minWidthProperty());
         stage.minHeightProperty().bind(viewRoot.minHeightProperty());
+        stage.setOnCloseRequest(event -> {
+            simulationController.getSimulation().close();
+        });
     }
 }

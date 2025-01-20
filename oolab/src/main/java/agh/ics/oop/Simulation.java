@@ -18,8 +18,10 @@ public class Simulation implements Runnable {
     private final int extraEnergy;
     private final int extraEnergyBigGrass;
     private final AnimalType animalType;
-    private volatile boolean isPaused = false;
     private final Object lock = new Object();
+    private volatile boolean isPaused = false;
+    private int delay = 500;
+    private volatile boolean active = true;
 
     public Simulation(WorldMap map, int animalGenLength, int animalNo, int startEnergy, int sexRequiredEnergy, int reproduceRequiredEnergy, int minMutationNo, int maxMutationNo, int plusGrass, int extraEnergy, int extraEnergyBigGrass, AnimalType animalType) {
         this.animals = new ArrayList<>();
@@ -61,14 +63,20 @@ public class Simulation implements Runnable {
         System.out.println(map.getStatistics());
         int lastIdx = 0;
 
-        for (int i = 0; i < 500; i++) { // Pętla symulacji
+        for (int i = 0; ; ) { // Pętla symulacji
+            if (!active) {
+                break;
+            }
             synchronized (lock) {
-                while (isPaused) { // Sprawdza, czy symulacja jest wstrzymana
+                while (isPaused) {
+                    if(!active){
+                        break;
+                    }
                     try {
-                        lock.wait(); // Wątek czeka na powiadomienie o wznowieniu
+                        lock.wait();
                     } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt(); // Przywracamy flagę przerwania
-                        return; // Kończymy działanie metody
+                        Thread.currentThread().interrupt();
+                        return;
                     }
                 }
             }
@@ -86,11 +94,12 @@ public class Simulation implements Runnable {
             lastIdx += 1;
 
             try {
-                Thread.sleep(100); // Opóźnienie między iteracjami
+                Thread.sleep(delay);
             } catch (InterruptedException e) {
-                Thread.currentThread().interrupt(); // Przywracamy flagę przerwania
-                return; // Kończymy działanie metody
+                Thread.currentThread().interrupt();
+                return;
             }
+            i += 1;
         }
 
         map.getStatistics().addLine(lastIdx);
@@ -106,15 +115,26 @@ public class Simulation implements Runnable {
 
     public void ResumeSimulation() {
         if (isPaused) {
-            isPaused = false;  // Ustawiamy flagę wznowienia
+            isPaused = false;
             synchronized (lock) {
-                lock.notify();  // Powiadamiamy wątek, aby kontynuował
+                lock.notify();
             }
             System.out.println("Simulation resumed.");
         }
     }
 
+    public void setSpeed(int speed) {
+        delay = speed;
+    }
+
     public List<AbstractAnimal> getAnimals() {
         return animals;
+    }
+
+    public void close() {
+        synchronized (lock) {
+            active = false;
+            lock.notify();
+        }
     }
 }

@@ -358,4 +358,8 @@ public abstract class AbstractWorldMap implements WorldMap {
         int avgChild = !animalList.isEmpty() ? sumChild / animalList.size() : 0;
         statistics.setStats(animalNo, plantNo, freePlaces, maxGen, avgEnergy, deadAnimalAvgLifetime, avgChild);
     }
+
+    public boolean[][] getProbabilityMap() {
+        return probability;
+    }
 }

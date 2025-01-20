@@ -69,14 +69,18 @@
                 <Label text="Grass Number:" style="-fx-pref-width: 150px" />
                 <TextField fx:id="grassNumberTextField" promptText="Enter grass number" />
             </HBox>
+
+
             <HBox style="-fx-spacing: 10; -fx-alignment: CENTER_LEFT">
-                <Label text="Animal Type (CRAZY,NORMAL):" style="-fx-pref-width: 150px" />
-                <TextField fx:id="animalTypeTextField" promptText="Enter Animal Type (CRAZY, NORMAL)" />
+                <Label text="Animal Type (CRAZY, NORMAL):" style="-fx-pref-width: 150px" />
+                <ChoiceBox fx:id="animalTypeChoiceBox" style="-fx-pref-width: 200;" />
             </HBox>
             <HBox style="-fx-spacing: 10; -fx-alignment: CENTER_LEFT">
                 <Label text="Map Type (GoodHarvestMap, SimpleWorldMap):" style="-fx-pref-width: 250px" />
-                <TextField fx:id="mapTypeField" promptText="Enter map type" />
+                <ChoiceBox fx:id="mapTypeChoiceBox" style="-fx-pref-width: 200;" />
             </HBox>
+
+
         </VBox>
     </HBox>
 

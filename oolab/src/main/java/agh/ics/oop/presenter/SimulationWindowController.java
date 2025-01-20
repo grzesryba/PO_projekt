@@ -3,11 +3,11 @@ package agh.ics.oop.presenter;
 import agh.ics.oop.model.*;
 import agh.ics.oop.Simulation;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.shape.Polygon;
 import javafx.scene.text.Text;
@@ -18,10 +18,12 @@ import javafx.scene.Node;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SimulationWindowController extends SimulationPresenter implements MapChangeListener {
+public class SimulationWindowController implements MapChangeListener {
     @FXML public GridPane gridPane;
     public TextArea textArea;
     public TextArea animalTextArea;
+    public TextField simulationSpeedField;
+    public Button applySpeedButton;
     private WorldMap worldMap;
     private final int mapHeight = 350;
     private final int mapWidth = 350;
@@ -36,6 +38,10 @@ public class SimulationWindowController extends SimulationPresenter implements M
 
     public void setSimulation(Simulation simulation) {
         this.simulation = simulation;
+    }
+
+    public Simulation getSimulation() {
+        return simulation;
     }
 
     public void drawMap() {
@@ -60,20 +66,27 @@ public class SimulationWindowController extends SimulationPresenter implements M
                 StackPane cellPane = new StackPane();
                 Node content = null;  // Używamy Node zamiast Text
 
+                boolean[][] probability = worldMap.getProbabilityMap();
+                if(probability[i][j]){
+                    cellPane.setStyle("-fx-background-color: green;");
+                }
+
+
+
                 if (worldElements != null && !worldElements.isEmpty()) {
                     String repr = worldElements.getLast().toString();
 
                     if (repr.equals("*")) {
-                        cellPane.setStyle("-fx-background-color: green;");
+//                        cellPane.setStyle("-fx-background-color: green;");
                         Circle dot = new Circle(3, Color.DARKGREEN);
                         content = dot;
                     }
                     else if (repr.equals("$")){
-                        cellPane.setStyle("-fx-background-color: green;");
+//                        cellPane.setStyle("-fx-background-color: green;");
                         Circle dot = new Circle(5, Color.DARKGREEN);
                         content = dot;
                     } else if ((repr.length() <= 2) && !repr.equals("*") && !repr.equals("$")) {
-                        cellPane.setStyle("-fx-background-color: #524a2f;");
+//                        cellPane.setStyle("-fx-background-color: #524a2f;");
 
                         double outerRadius = Math.min(cellWidth, cellHeight) * 0.3;
                         double innerRadius = outerRadius * 0.5;
@@ -118,6 +131,7 @@ public class SimulationWindowController extends SimulationPresenter implements M
 
                     if (selectedAnimal != null && worldElements.contains(selectedAnimal)) {
                         cellPane.setStyle("-fx-background-color: yellow; -fx-border-color: red; -fx-font-weight: bold;");
+//                        showMoreDominantGen();
                     }
                 } else {
                     content = new Text(" ");
@@ -188,7 +202,7 @@ public class SimulationWindowController extends SimulationPresenter implements M
     }
 
     private void updateSelectedAnimalStatistics() {
-        if (selectedAnimal != null && selectedAnimal.isAlive()) {
+        if (selectedAnimal != null) {
             String statsText = String.valueOf(selectedAnimal.getAnimalStats());
             System.out.println(statsText);
             animalTextArea.setText(statsText);
@@ -319,4 +333,28 @@ public class SimulationWindowController extends SimulationPresenter implements M
 //            }
 //        }
 //    }
+
+    private void showErrorDialog(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    @FXML
+    private void applySimulationSpeed() {
+        try {
+            int delay = Integer.parseInt(simulationSpeedField.getText());
+            if (delay < 0) {
+                showErrorDialog("Simulation speed must be a non-negative number.");
+                return;
+            }
+            // Zakładamy, że istnieje metoda do ustawienia tempa symulacji
+            simulation.setSpeed(delay);
+            System.out.println("Simulation speed updated to " + delay + " ms.");
+        } catch (NumberFormatException e) {
+            showErrorDialog("Please enter a valid number for simulation speed.");
+        }
+    }
 }
