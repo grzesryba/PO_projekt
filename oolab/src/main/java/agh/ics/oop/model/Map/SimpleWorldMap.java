@@ -1,5 +1,7 @@
-package agh.ics.oop.model;
+package agh.ics.oop.model.Map;
 
+import agh.ics.oop.model.Map.Grass.Grass;
+import agh.ics.oop.model.Others.Vector2d;
 import agh.ics.oop.model.util.RandomPositionGenerator;
 
 import java.util.ArrayList;

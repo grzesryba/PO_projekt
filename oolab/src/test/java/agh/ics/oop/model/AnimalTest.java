@@ -1,10 +1,14 @@
 package agh.ics.oop.model;
 
-import agh.ics.oop.World;
-import org.junit.jupiter.api.BeforeEach;
+import agh.ics.oop.model.Animals.AbstractAnimal;
+import agh.ics.oop.model.Animals.Animal;
+import agh.ics.oop.model.Map.SimpleWorldMap;
+import agh.ics.oop.model.Map.WorldElement;
+import agh.ics.oop.model.Others.IncorrectPositionException;
+import agh.ics.oop.model.Others.MapDirection;
+import agh.ics.oop.model.Others.Vector2d;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 

@@ -1,6 +1,9 @@
-package agh.ics.oop.model;
+package agh.ics.oop.model.Animals;
 
-import com.sun.webkit.dom.RangeImpl;
+import agh.ics.oop.model.Others.MapDirection;
+import agh.ics.oop.model.Statistics.AnimalStatistics;
+import agh.ics.oop.model.Others.Vector2d;
+import agh.ics.oop.model.Map.WorldMap;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +16,7 @@ public class CrazyAnimal extends AbstractAnimal {
         for (int i = 0; i < genLength; i++) {
             genList.add(rand.nextInt(8));
         }
-        animalStats = new AnimalStatistics(direction,position,energy,AnimalType.CRAZY,genList);
+        animalStats = new AnimalStatistics(direction,position,energy, AnimalType.CRAZY,genList);
     }
 
     public CrazyAnimal(Vector2d position, MapDirection direction, List<Integer> genList, int energy) {

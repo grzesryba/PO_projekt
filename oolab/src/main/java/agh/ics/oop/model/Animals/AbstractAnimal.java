@@ -1,7 +1,9 @@
-package agh.ics.oop.model;
+package agh.ics.oop.model.Animals;
 
-import java.util.ArrayList;
-import java.util.List;
+import agh.ics.oop.model.Statistics.AnimalStatistics;
+import agh.ics.oop.model.Others.Vector2d;
+import agh.ics.oop.model.Map.WorldElement;
+import agh.ics.oop.model.Map.WorldMap;
 
 public abstract class AbstractAnimal implements WorldElement {
 

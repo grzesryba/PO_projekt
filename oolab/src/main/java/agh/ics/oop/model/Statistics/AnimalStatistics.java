@@ -1,4 +1,8 @@
-package agh.ics.oop.model;
+package agh.ics.oop.model.Statistics;
+
+import agh.ics.oop.model.Animals.AnimalType;
+import agh.ics.oop.model.Others.MapDirection;
+import agh.ics.oop.model.Others.Vector2d;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +18,6 @@ public class AnimalStatistics {
     private int childNo = 0;
     private int eatenPlants = 0;
     private int deathDay;
-    private final List<AnimalStatistics> children = new ArrayList<>();
 
 
     public AnimalStatistics(MapDirection direction, Vector2d position, int energy, AnimalType animalType, List<Integer> genList) {
@@ -24,13 +27,6 @@ public class AnimalStatistics {
         this.animalType = animalType;
         this.genList.addAll(genList);
     }
-    public int getTotalDescendants() {
-        int total = children.size();
-        for (AnimalStatistics child : children) {
-            total += child.getTotalDescendants();
-        }
-        return total;
-    }
     public String toString() {
         return
                 "Typ: " + animalType + "\n" +
@@ -39,7 +35,6 @@ public class AnimalStatistics {
                 "Kierunek: " + direction + "\n" +
                 "Pozycja: " + position + "\n" +
                 "Liczba dzieci: " + childNo + "\n" +
-                        "Liczba potomków: " + getTotalDescendants() + "\n" +
                 "Zjedzone rośliny: " + eatenPlants + "\n" +
                 "Obecny indeks genetyczny: " + currentGenIdx + "\n" +
                 "Aktualna genetyka: " + (genList.size() > currentGenIdx ? genList.get(currentGenIdx) : "Brak") + "\n" +
@@ -57,11 +52,6 @@ public class AnimalStatistics {
 
     public int getChildNo() {
         return childNo;
-    }
-
-
-    public void addChild() {
-        childNo += 1;
     }
 
     public boolean isAt(Vector2d position) {
@@ -124,4 +114,7 @@ public class AnimalStatistics {
         this.deathDay = deathDay;
     }
 
+    public void addChild() {
+        childNo++;
+    }
 }

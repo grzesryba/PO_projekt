@@ -1,9 +1,12 @@
 package agh.ics.oop.presenter;
 
-import agh.ics.oop.model.*;
 import agh.ics.oop.Simulation;
+import agh.ics.oop.model.Animals.AbstractAnimal;
+import agh.ics.oop.model.Map.WorldElement;
+import agh.ics.oop.model.Map.WorldMap;
+import agh.ics.oop.model.Others.MapChangeListener;
+import agh.ics.oop.model.Others.Vector2d;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;

@@ -1,4 +1,6 @@
-package agh.ics.oop.model;
+package agh.ics.oop.model.Map.Grass;
+
+import agh.ics.oop.model.Others.Vector2d;
 
 import java.util.ArrayList;
 import java.util.List;

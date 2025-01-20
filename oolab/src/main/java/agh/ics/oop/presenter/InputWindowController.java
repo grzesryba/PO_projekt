@@ -2,10 +2,10 @@ package agh.ics.oop.presenter;
 
 import agh.ics.oop.Simulation;
 import agh.ics.oop.SimulationEngine;
-import agh.ics.oop.model.AbstractWorldMap;
-import agh.ics.oop.model.AnimalType;
-import agh.ics.oop.model.GoodHarvestMap;
-import agh.ics.oop.model.SimpleWorldMap;
+import agh.ics.oop.model.Map.AbstractWorldMap;
+import agh.ics.oop.model.Animals.AnimalType;
+import agh.ics.oop.model.Map.GoodHarvestMap;
+import agh.ics.oop.model.Map.SimpleWorldMap;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -169,6 +169,7 @@ public class InputWindowController {
             e.printStackTrace();
         }
     }
+
     private void showError(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Input Error");
@@ -202,12 +203,12 @@ public class InputWindowController {
                 showError("Grass number must be non-negative.");
                 return false;
             }
-            if (sexRequiredEnergy <= 0 || reproduceRequiredEnergy <= 0 || startEnergy <= 0) {
+            if (sexRequiredEnergy <= 0 || reproduceRequiredEnergy <= 0 || startEnergy <= 0 || sexRequiredEnergy<reproduceRequiredEnergy) {
                 showError("Energy values must be positive.");
                 return false;
             }
-            if (plusGrass < 0) {
-                showError("Grass growth per step (plusGrass) must be non-negative.");
+            if (plusGrass < 0 || plusGrass > width * height) {
+                showError("Grass growth per step (plusGrass) must be non-negative and smaller then map area.");
                 return false;
             }
             if (extraEnergy <= 0) {
@@ -222,7 +223,7 @@ public class InputWindowController {
                 showError("Mutation numbers must be valid (min <= max).");
                 return false;
             }
-            if (animalNo <= 0) {
+            if (animalNo <= 0 || animalNo > height*width) {
                 showError("Animal number must be positive.");
                 return false;
             }
@@ -241,7 +242,7 @@ public class InputWindowController {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select csv file");
 
-        File initialDir = new File("./Przykladowe_konfiguracje");
+        File initialDir = new File("C:/Users/sanko/OneDrive/Pulpit/to/PO_projekt-maja/oolab/Przykladowe_konfiguracje");
         if (initialDir.exists()) {
             fileChooser.setInitialDirectory(initialDir);
         }
@@ -253,11 +254,10 @@ public class InputWindowController {
             if (file != null) {
                 try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
                     String line;
-                    // Odczytaj pierwszą linię z pliku CSV
                     if ((line = reader.readLine()) != null) {
-                        String[] data = line.split(","); // Rozdziel dane na podstawie przecinków
-                        if (data.length == 15) { // Sprawdź, czy liczba parametrów jest prawidłowa
-                            // Uzupełnij pola tekstowe danymi
+                        String[] data = line.split(",");
+                        if (data.length == 15) {
+
                             widthField.setText(data[0]);
                             heightField.setText(data[1]);
                             animalGenLengthField.setText(data[2]);
@@ -306,7 +306,6 @@ public class InputWindowController {
 
         if (file != null) {
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-                // Pobierz dane z pól tekstowych i zapisz jako wiersz CSV
                 String csvLine = String.join(",",
                         widthField.getText(),
                         heightField.getText(),

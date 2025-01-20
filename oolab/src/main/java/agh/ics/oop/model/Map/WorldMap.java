@@ -1,7 +1,11 @@
-package agh.ics.oop.model;
+package agh.ics.oop.model.Map;
 
-import agh.ics.oop.model.MoveDirection;
-import agh.ics.oop.model.Vector2d;
+import agh.ics.oop.model.Animals.AbstractAnimal;
+import agh.ics.oop.model.Others.Boundary;
+import agh.ics.oop.model.Others.IncorrectPositionException;
+import agh.ics.oop.model.Others.MoveValidator;
+import agh.ics.oop.model.Others.Vector2d;
+import agh.ics.oop.model.Statistics.SimulationStatistics;
 
 import java.util.List;
 

@@ -1,6 +1,9 @@
-package agh.ics.oop.model;
+package agh.ics.oop.model.Map.Grass;
 
-public class BigGrassPiece implements WorldElement{
+import agh.ics.oop.model.Map.WorldElement;
+import agh.ics.oop.model.Others.Vector2d;
+
+public class BigGrassPiece implements WorldElement {
     private final Vector2d position;
     private final BigGrass parent;
 

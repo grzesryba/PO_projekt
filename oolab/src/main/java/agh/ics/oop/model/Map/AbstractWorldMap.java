@@ -1,5 +1,10 @@
-package agh.ics.oop.model;
+package agh.ics.oop.model.Map;
 
+import agh.ics.oop.model.Animals.AbstractAnimal;
+import agh.ics.oop.model.Animals.AnimalFactory;
+import agh.ics.oop.model.Map.Grass.Grass;
+import agh.ics.oop.model.Others.*;
+import agh.ics.oop.model.Statistics.SimulationStatistics;
 import agh.ics.oop.model.util.MapVisualizer;
 
 import java.util.*;

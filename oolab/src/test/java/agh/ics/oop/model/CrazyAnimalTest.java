@@ -1,9 +1,13 @@
 package agh.ics.oop.model;
 
+import agh.ics.oop.model.Animals.CrazyAnimal;
+import agh.ics.oop.model.Map.SimpleWorldMap;
+import agh.ics.oop.model.Others.IncorrectPositionException;
+import agh.ics.oop.model.Others.MapDirection;
+import agh.ics.oop.model.Others.Vector2d;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
-import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
 

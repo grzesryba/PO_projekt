@@ -1,6 +1,12 @@
 package agh.ics.oop;
 
-import agh.ics.oop.model.*;
+import agh.ics.oop.model.Animals.AbstractAnimal;
+import agh.ics.oop.model.Animals.AnimalFactory;
+import agh.ics.oop.model.Animals.AnimalType;
+import agh.ics.oop.model.Map.WorldMap;
+import agh.ics.oop.model.Others.IncorrectPositionException;
+import agh.ics.oop.model.Others.MapDirection;
+import agh.ics.oop.model.Others.Vector2d;
 
 import java.util.ArrayList;
 import java.util.List;
