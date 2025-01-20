@@ -1,7 +1,11 @@
-package agh.ics.oop.model;
+package agh.ics.oop.model.Map;
 
-import agh.ics.oop.model.MoveDirection;
-import agh.ics.oop.model.Vector2d;
+import agh.ics.oop.model.Animals.AbstractAnimal;
+import agh.ics.oop.model.Others.Boundary;
+import agh.ics.oop.model.Others.IncorrectPositionException;
+import agh.ics.oop.model.Others.MoveValidator;
+import agh.ics.oop.model.Others.Vector2d;
+import agh.ics.oop.model.Statistics.SimulationStatistics;
 
 import java.util.List;
 
@@ -19,13 +23,13 @@ public interface WorldMap extends MoveValidator {
      * @param animal The animal to place on the map.
      * @return True if the animal was placed. The animal cannot be placed if the move is not valid.
      */
-    boolean place(Animal animal) throws IncorrectPositionException;
+    boolean place(AbstractAnimal animal) throws IncorrectPositionException;
 
     /**
      * Moves an animal (if it is present on the map) according to specified direction.
      * If the move is not possible, this method has no effect.
      */
-    void move(Animal animal, MoveDirection direction);
+    void move(AbstractAnimal animal);
 
     /**
      * Return true if given position on the map is occupied. Should not be
@@ -43,11 +47,36 @@ public interface WorldMap extends MoveValidator {
      * @param position The position of the animal.
      * @return animal or null if the position is not occupied.
      */
-    WorldElement objectAt(Vector2d position);
+    List<WorldElement> objectsAt(Vector2d position);
 
     List<WorldElement> getElements();
 
     Boundary getCurrentBounds();
 
     int getId();
+
+    int getWidth();
+
+    int getHeight();
+
+    void deleteAnimal(AbstractAnimal animal);
+
+    void plantEating(int extraEnergy, int extraEnergyBigGrass);
+
+    void addPlant(int n);
+
+    void reproduce(int sexRequiredEnergy, int reproduceRequiredEnergy, int minMutation, int maxMutation);
+
+    void moveAllAnimals();
+
+    void deleteDeathAnimals(int deathDay);
+
+    void alertListeners(String message);
+
+    void updateStats();
+
+    SimulationStatistics getStatistics();
+
+    boolean[][] getProbabilityMap();
+
 }
