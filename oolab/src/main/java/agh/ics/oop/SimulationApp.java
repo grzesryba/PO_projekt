@@ -4,7 +4,6 @@ import agh.ics.oop.model.GrassField;
 import agh.ics.oop.model.MoveDirection;
 import agh.ics.oop.model.Vector2d;
 import agh.ics.oop.presenter.InputWindowController;
-import agh.ics.oop.presenter.SimulationPresenter;
 import agh.ics.oop.presenter.SimulationWindowController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

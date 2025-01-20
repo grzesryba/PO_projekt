@@ -234,21 +234,17 @@ public class SimulationWindowController implements MapChangeListener {
         drawMap();
     }
 
-
     private void updateStatisticsDisplay(){
         if (worldMap == null || worldMap.getStatistics() == null) {
             return;
         }
         String statsText = String.valueOf(worldMap.getStatistics());
 
-        // Zmiana formatu stringa, aby było bardziej czytelne
         statsText = statsText.replaceAll("\\{", "\n")
                 .replaceAll("\\}", "")
                 .replaceAll(",", "\n")
                 .replaceAll("=", ": ");
 
-
-        // Ustawienie sformatowanego tekstu w TextArea
         textArea.setText(statsText);
     }
 
@@ -310,6 +306,7 @@ public class SimulationWindowController implements MapChangeListener {
         }
         return count;
     }
+
     @FXML
     private void showMoreDominantGen() {
         int dominantGen = worldMap.getStatistics().getMostCommonGen();

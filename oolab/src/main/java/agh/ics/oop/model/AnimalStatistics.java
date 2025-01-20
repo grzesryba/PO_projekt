@@ -24,7 +24,13 @@ public class AnimalStatistics {
         this.animalType = animalType;
         this.genList.addAll(genList);
     }
-
+    public int getTotalDescendants() {
+        int total = children.size();
+        for (AnimalStatistics child : children) {
+            total += child.getTotalDescendants();
+        }
+        return total;
+    }
     public String toString() {
         return
                 "Typ: " + animalType + "\n" +
@@ -33,6 +39,7 @@ public class AnimalStatistics {
                 "Kierunek: " + direction + "\n" +
                 "Pozycja: " + position + "\n" +
                 "Liczba dzieci: " + childNo + "\n" +
+                        "Liczba potomków: " + getTotalDescendants() + "\n" +
                 "Zjedzone rośliny: " + eatenPlants + "\n" +
                 "Obecny indeks genetyczny: " + currentGenIdx + "\n" +
                 "Aktualna genetyka: " + (genList.size() > currentGenIdx ? genList.get(currentGenIdx) : "Brak") + "\n" +

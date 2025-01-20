@@ -89,11 +89,14 @@ public class InputWindowController {
 
     @FXML
     private void startSimulation(ActionEvent event) {
+        if (!validateInput()) {
+            return;
+        }
         try {
-            // Pobieranie danych wejściowych
             int width = Integer.parseInt(widthField.getText());
             int height = Integer.parseInt(heightField.getText());
             int grassNo = Integer.parseInt(grassNumberTextField.getText());
+
             String mapTypeInput = mapTypeChoiceBox.getValue();
             AbstractWorldMap map;
             if (mapTypeInput.equalsIgnoreCase("GoodHarvestMap")) {
@@ -142,7 +145,6 @@ public class InputWindowController {
 
             URL simUrl = getClass().getClassLoader().getResource("simulation.fxml");
             if (simUrl == null) {
-                System.err.println("Nie znaleziono pliku simulation.fxml!");
                 return;
             }
             FXMLLoader simulationLoader = new FXMLLoader();
@@ -165,6 +167,73 @@ public class InputWindowController {
         } catch (NumberFormatException | IOException e) {
             System.out.println("Wprowadź poprawne dane liczbowe lub wystąpił błąd ładowania symulacji.");
             e.printStackTrace();
+        }
+    }
+    private void showError(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Input Error");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    private boolean validateInput() {
+        try {
+            int width = Integer.parseInt(widthField.getText());
+            int height = Integer.parseInt(heightField.getText());
+            int grassNo = Integer.parseInt(grassNumberTextField.getText());
+            int sexRequiredEnergy = Integer.parseInt(sexRequiredEnergyField.getText());
+            int reproduceRequiredEnergy = Integer.parseInt(reproduceRequiredEnergyField.getText());
+            int minMutationNo = Integer.parseInt(minMutationField.getText());
+            int maxMutationNo = Integer.parseInt(maxMutationField.getText());
+            int startEnergy = Integer.parseInt(startEnergyField.getText());
+            int plusGrass = Integer.parseInt(plusGrassField.getText());
+            int extraEnergy = Integer.parseInt(extraEnergyField.getText());
+            int extraEnergyBigGrass = Integer.parseInt(extraEnergyBigGrassField.getText());
+            int animalNo = Integer.parseInt(animalNoTextField.getText());
+            int animalGenLength = Integer.parseInt(animalGenLengthField.getText());
+
+
+            if (width <= 0 || height <= 0) {
+                showError("Width and height must be positive.");
+                return false;
+            }
+            if (grassNo < 0) {
+                showError("Grass number must be non-negative.");
+                return false;
+            }
+            if (sexRequiredEnergy <= 0 || reproduceRequiredEnergy <= 0 || startEnergy <= 0) {
+                showError("Energy values must be positive.");
+                return false;
+            }
+            if (plusGrass < 0) {
+                showError("Grass growth per step (plusGrass) must be non-negative.");
+                return false;
+            }
+            if (extraEnergy <= 0) {
+                showError("Extra energy from grass must be positive.");
+                return false;
+            }
+            if (extraEnergyBigGrass <= 0) {
+                showError("Extra energy from big grass must be positive.");
+                return false;
+            }
+            if (minMutationNo < 0 || maxMutationNo < 0 || minMutationNo > maxMutationNo) {
+                showError("Mutation numbers must be valid (min <= max).");
+                return false;
+            }
+            if (animalNo <= 0) {
+                showError("Animal number must be positive.");
+                return false;
+            }
+            if (animalGenLength <= 0) {
+                showError("Animal gene length must be positive.");
+                return false;
+            }
+            return true;
+        } catch (NumberFormatException e) {
+            showError("Please enter valid numeric values.");
+            return false;
         }
     }
 
@@ -205,7 +274,6 @@ public class InputWindowController {
                             animalTypeChoiceBox.setValue(data[13]);
                             mapTypeChoiceBox.setValue(data[14]);
                         } else {
-                            // Wyświetlenie błędu, jeśli liczba kolumn jest nieprawidłowa
                             showErrorDialog("Invalid CSV format. Please ensure the file has exactly 15 values.");
                         }
                     }
@@ -229,7 +297,6 @@ public class InputWindowController {
     private void saveCurrentConfiguration() {
         String exampleName = exampleNameField.getText();
 
-        // Jeśli pole tekstowe jest puste, pokaż komunikat
         if (exampleName == null || exampleName.isBlank()) {
             showErrorDialog("Please provide a name for the configuration.");
             return;
@@ -269,7 +336,7 @@ public class InputWindowController {
     @FXML
     private void toggleExampleNameField() {
         boolean isSelected = saveAsExampleCheckBox.isSelected();
-        exampleNameField.setVisible(isSelected); // Pole tekstowe widoczne, gdy checkbox zaznaczony
+        exampleNameField.setVisible(isSelected);
     }
 
     private void configureStage(Stage stage, BorderPane viewRoot) {
